@@ -18,7 +18,7 @@ import (
 
 // TODO
 //
-// 1) set up emailing
+// DONE: set up emailing
 //
 // 2) set up metric reporting
 //      - Daily high and low
@@ -53,6 +53,13 @@ import (
 // 7) Start with $5 trades, 10 times, with 1% difference threshold.
 //		- with worst case of .01% fees, this should equate to 10% gains, or $0.5
 //
+// 8) Set up log files
+//		- create log for each module and main log
+//		- log files for continue to grow until manually deleted
+//
+// 9) Set up database
+// 		- log trades (own table)
+//		- log daily values (own table)
 
 // trader is the struct to control some of the functionality
 type trader struct {

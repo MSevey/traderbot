@@ -44,7 +44,7 @@ func SendEmail() {
 	mail.senderID = "mjsevey@gmail.com"
 	mail.toIds = []string{"mjsevey@gmail.com"}
 	mail.subject = "This is the email subject"
-	mail.body = "Harry Potter and threat to Israel\n\nGood editing!!"
+	mail.body = "Harry Potter and threat to Hogwarts\n\nGood editing!!"
 
 	messageBody := mail.BuildMessage()
 

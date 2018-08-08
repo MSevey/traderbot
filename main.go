@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"time"
 
 	"github.com/MSevey/trader/api"
 	"github.com/MSevey/trader/mail"
@@ -58,6 +59,7 @@ import (
 //		- log files for continue to grow until manually deleted
 //
 // 9) Set up database
+// 		- install postgres
 // 		- log trades (own table)
 //		- log daily values (own table)
 
@@ -74,7 +76,69 @@ type trader struct {
 }
 
 func main() {
-	metrics.Test()
+	// Metrics goroutine
+	fmt.Println("go metrics")
+	go metrics.Test()
+
+	// coinMarketCap API goroutine
+	fmt.Println("go coin")
+	go coinMarketCap()
+
+	// binance API goroutine
+	fmt.Println("go binance")
+	go binance()
+
+	// TODO replace sleep with channels to wait on goroutines closing
+	time.Sleep(11 * time.Second)
+
+	// Sending Email
+	//
+	// Build Mail object
+	mail.SendEmail()
+}
+
+// check pulls out the duplicate error checking code
+func check(e error) {
+	if e != nil {
+		log.Fatal(e)
+	}
+}
+
+// func jsonUnmarshal(data []byte,)
+
+//
+func binance() {
+	fmt.Println("binance")
+	// Create client for binance requests
+	binanceClient := api.NewClient(api.BinanceAPI, 2)
+	body, err := binanceClient.GetAPI(binanceClient.Address + api.BNBExchangeInfo)
+	check(err)
+
+	rl := api.BNBLimits{}
+	jsonErr := json.Unmarshal(body, &rl)
+	check(jsonErr)
+
+	fmt.Println(rl)
+
+	body, err = binanceClient.GetAPI(binanceClient.Address + api.BNBPrice + "?symbol=" + api.BNBBTC)
+	check(err)
+
+	price := api.TickerPrice{}
+	jsonErr = json.Unmarshal(body, &price)
+	check(jsonErr)
+
+	fmt.Println(price.Price)
+
+	// Loop to test go routine
+	for i := 0; i < 10; i++ {
+		fmt.Println("binance loop")
+		time.Sleep(time.Second)
+	}
+}
+
+//
+func coinMarketCap() {
+	fmt.Println("coin")
 	// Create client for coinmarketcap requests
 	coinClient := api.NewClient(api.CoinMarketCapTickerAPI, 2)
 
@@ -96,37 +160,9 @@ func main() {
 
 	fmt.Println(BNB)
 
-	// Create client for binance requests
-	binanceClient := api.NewClient(api.BinanceAPI, 2)
-	body, err = binanceClient.GetAPI(binanceClient.Address + api.BNBExchangeInfo)
-	check(err)
-
-	rl := api.BNBLimits{}
-	jsonErr = json.Unmarshal(body, &rl)
-	check(jsonErr)
-
-	fmt.Println(rl)
-
-	body, err = binanceClient.GetAPI(binanceClient.Address + api.BNBPrice + "?symbol=" + api.BNBBTC)
-	check(err)
-
-	price := api.TickerPrice{}
-	jsonErr = json.Unmarshal(body, &price)
-	check(jsonErr)
-
-	fmt.Println(price.Price)
-
-	// Sending Email
-	//
-	// Build Mail object
-	mail.SendEmail()
-}
-
-// check pulls out the duplicate error checking code
-func check(e error) {
-	if e != nil {
-		log.Fatal(e)
+	// Loop to test go routine
+	for i := 0; i < 10; i++ {
+		fmt.Println("coinMarketCap loop")
+		time.Sleep(time.Second)
 	}
 }
-
-// func jsonUnmarshal(data []byte,)

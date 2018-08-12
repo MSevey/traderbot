@@ -76,20 +76,23 @@ type trader struct {
 }
 
 func main() {
+	// Create channel to control go routines
+	done := make(chan struct{})
+
 	// Metrics goroutine
 	fmt.Println("go metrics")
 	go metrics.Test()
 
 	// coinMarketCap API goroutine
 	fmt.Println("go coin")
-	go coinMarketCap()
+	go coinMarketCap(done)
 
 	// binance API goroutine
 	fmt.Println("go binance")
-	go binance()
+	go binance(done)
 
-	// TODO replace sleep with channels to wait on goroutines closing
-	time.Sleep(11 * time.Second)
+	time.Sleep(4 * time.Second)
+	close(done)
 
 	// Sending Email
 	//
@@ -107,7 +110,7 @@ func check(e error) {
 // func jsonUnmarshal(data []byte,)
 
 //
-func binance() {
+func binance(done chan struct{}) {
 	fmt.Println("binance")
 	// Create client for binance requests
 	binanceClient := api.NewClient(api.BinanceAPI, 2)
@@ -130,14 +133,19 @@ func binance() {
 	fmt.Println(price.Price)
 
 	// Loop to test go routine
-	for i := 0; i < 10; i++ {
+	for {
+		select {
+		case <-done:
+			return
+		default:
+		}
 		fmt.Println("binance loop")
 		time.Sleep(time.Second)
 	}
 }
 
 //
-func coinMarketCap() {
+func coinMarketCap(done chan struct{}) {
 	fmt.Println("coin")
 	// Create client for coinmarketcap requests
 	coinClient := api.NewClient(api.CoinMarketCapTickerAPI, 2)
@@ -161,7 +169,12 @@ func coinMarketCap() {
 	fmt.Println(BNB)
 
 	// Loop to test go routine
-	for i := 0; i < 10; i++ {
+	for {
+		select {
+		case <-done:
+			return
+		default:
+		}
 		fmt.Println("coinMarketCap loop")
 		time.Sleep(time.Second)
 	}

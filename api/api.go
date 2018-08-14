@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"time"
 )
 
@@ -39,19 +40,23 @@ func (c *Client) GetAPI(url string) ([]byte, error) {
 		Timeout: c.Timeout,
 	}
 
-	req, err := http.NewRequest(http.MethodGet, url, nil)
+	res, err := apiClient.Get(url)
 	if err != nil {
 		return []byte{}, err
 	}
 
-	// Setting the header lets remote servers understand what kind of traffic it
-	// is receiving. Some sites will even reject empty or generic User-Agent
-	// strings.
-	req.Header.Set("User-Agent", "trader")
+	return ioutil.ReadAll(res.Body)
+}
 
-	res, getErr := apiClient.Do(req)
-	if getErr != nil {
-		return []byte{}, getErr
+// PostAPI submits a post request to the intended url endpoint
+func (c *Client) PostAPI(url string, data url.Values) ([]byte, error) {
+	apiClient := http.Client{
+		Timeout: c.Timeout,
+	}
+
+	res, err := apiClient.PostForm(url, data)
+	if err != nil {
+		return []byte{}, err
 	}
 
 	return ioutil.ReadAll(res.Body)

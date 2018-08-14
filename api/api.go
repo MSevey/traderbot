@@ -2,6 +2,7 @@ package api
 
 import (
 	"io/ioutil"
+	"log"
 	"net/http"
 	"time"
 )
@@ -13,6 +14,15 @@ type Client struct {
 
 	// Timeout is the timeout set for the API
 	Timeout time.Duration
+}
+
+// check pulls out the duplicate error checking code
+//
+// TODO: Replace with log to file
+func check(e error) {
+	if e != nil {
+		log.Fatal(e)
+	}
 }
 
 // NewClient creates a new client to be used for API calls

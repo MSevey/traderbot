@@ -1,5 +1,10 @@
 package api
 
+import (
+	"encoding/json"
+	"strconv"
+)
+
 var (
 	// BTCID is bitcoin's id for the coinmarket cap API endpoint
 	BTCID = 1
@@ -53,4 +58,22 @@ type quoteData struct {
 	PercentChange1h  float64 `json:"percent_change_1h"`
 	PercentChange24h float64 `json:"percent_change_24h"`
 	PercentChange7d  float64 `json:"percent_change_7d"`
+}
+
+// NewCoinCapClient creates a new api client for the Binance API
+func NewCoinCapClient() *Client {
+	return NewClient(CoinMarketCapTickerAPI, 2)
+}
+
+// GetTickerInfo calls the api endpoints that returns the ticker information for
+// a coin
+func (c *Client) GetTickerInfo(ticker int) CoinCap {
+	body, err := c.GetAPI(c.Address + strconv.Itoa(ticker) + "/")
+	check(err)
+
+	coin := CoinCap{}
+	jsonErr := json.Unmarshal(body, &coin)
+	check(jsonErr)
+
+	return coin
 }

@@ -1,10 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
-	"strconv"
 	"sync"
 	"time"
 
@@ -120,6 +118,7 @@ func check(e error) {
 	}
 }
 
+// TODO: refactor code for unmarshalling json and handling errors
 // func jsonUnmarshal(data []byte,)
 
 //
@@ -158,24 +157,12 @@ func binance(done chan struct{}) {
 func coinMarketCap(done chan struct{}) {
 	fmt.Println("coin")
 	// Create client for coinmarketcap requests
-	coinClient := api.NewClient(api.CoinMarketCapTickerAPI, 2)
+	coinClient := api.NewCoinCapClient()
 
-	body, err := coinClient.GetAPI(coinClient.Address + strconv.Itoa(api.BTCID) + "/")
-	check(err)
-
-	BTC := api.CoinCap{}
-	jsonErr := json.Unmarshal(body, &BTC)
-	check(jsonErr)
-
+	BTC := coinClient.GetTickerInfo(api.BTCID)
 	fmt.Println(BTC)
 
-	body, err = coinClient.GetAPI(coinClient.Address + strconv.Itoa(api.BNBID) + "/")
-	check(err)
-
-	BNB := api.CoinCap{}
-	jsonErr = json.Unmarshal(body, &BNB)
-	check(jsonErr)
-
+	BNB := coinClient.GetTickerInfo(api.BNBID)
 	fmt.Println(BNB)
 
 	// Loop to test go routine

@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"log"
 )
 
 // TODO
@@ -198,15 +197,6 @@ type Fill struct {
 // TAKE_PROFIT			quantity, stopPrice
 // TAKE_PROFIT_LIMIT	timeInForce, quantity, price, stopPrice
 // LIMIT_MAKER			quantity, price
-
-// check pulls out the duplicate error checking code
-//
-// TODO: Replace with log to file
-func check(e error) {
-	if e != nil {
-		log.Fatal(e)
-	}
-}
 
 // NewBinanceClient creates a new api client for the Binance API
 func NewBinanceClient() *Client {

@@ -7,7 +7,7 @@ var (
 	// BNBID is binance coin's id for the coinmarket cap API endpoint
 	BNBID = 1839
 
-	// coinMarketCapTickerAPI is the API endpoint for coinMarketCap to get the
+	// CoinMarketCapTickerAPI is the API endpoint for coinMarketCap to get the
 	// detailed ticker information for a specific cryptocurrency
 	CoinMarketCapTickerAPI = "https://api.coinmarketcap.com/v2/ticker/"
 )

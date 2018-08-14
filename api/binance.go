@@ -1,5 +1,10 @@
 package api
 
+import (
+	"encoding/json"
+	"log"
+)
+
 // TODO
 //
 // 1) Create methods for each API call
@@ -193,3 +198,55 @@ type Fill struct {
 // TAKE_PROFIT			quantity, stopPrice
 // TAKE_PROFIT_LIMIT	timeInForce, quantity, price, stopPrice
 // LIMIT_MAKER			quantity, price
+
+// check pulls out the duplicate error checking code
+//
+// TODO: Replace with log to file
+func check(e error) {
+	if e != nil {
+		log.Fatal(e)
+	}
+}
+
+// NewBinanceClient creates a new api client for the Binance API
+func NewBinanceClient() *Client {
+	return NewClient(BinanceAPI, 2)
+}
+
+// GetBinanceExchangeInfo calls the API endpoint that returns info on the binance
+// exchange
+func (c *Client) GetBinanceExchangeInfo() BNBLimits {
+	body, err := c.GetAPI(c.Address + BNBExchangeInfo)
+	check(err)
+
+	// Get rate limits
+	rl := BNBLimits{}
+	jsonErr := json.Unmarshal(body, &rl)
+	check(jsonErr)
+	return rl
+}
+
+// GetCoinPrice calls the API endpoint that returns the current price for a coin
+func (c *Client) GetCoinPrice(symbol string) TickerPrice {
+	body, err := c.GetAPI(c.Address + BNBPrice + "?symbol=" + symbol)
+	check(err)
+
+	price := TickerPrice{}
+	jsonErr := json.Unmarshal(body, &price)
+	check(jsonErr)
+
+	return price
+}
+
+// Get24hrStats calls the API endpoint that returns the 24hr statistics on a
+// coin
+func (c *Client) Get24hrStats(symbol string) Stats24hr {
+	body, err := c.GetAPI(c.Address + BNB24hrStats + "?symbol=" + symbol)
+	check(err)
+
+	stats := Stats24hr{}
+	jsonErr := json.Unmarshal(body, &stats)
+	check(jsonErr)
+
+	return stats
+}

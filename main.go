@@ -20,52 +20,64 @@ import (
 //
 // DONE: set up emailing
 //
-// 2) set up metric reporting (need trader to be working to determine how to calculate metrics)
+// DONE: Determine Binance fees
+//      - 0.1% per trade, 0.05% if paid with BNB
+//
+// 5) set up metric reporting (need trader to be working to determine how to
+// calculate metrics)
 //      - Daily high and low
 //      - Number of buys/sells
 //      - % profit for past 24hrs
 //      - % profit all time
 //      - number of pending sells
 //
-// 3) Buying Algorithm (need buying API calls to be working)
+//  FOR TESTING START WITH LOGGING STATS ON WHAT TRIGGERED THE BUY OF SELL,
+//  HIGH/LOW PRICES, CONDITION THAT TRIGGERED ORDER, ETC. SUBMIT TEST ORDERS
+//
+//  LOG PRICE AFTER BUY AND SELL ORDERS TO SEE IF PRICE CONTINUES TO GO
+//	UP/DOWN OR IF IT SWITCHED DIRECTIONS
+//
+// 2) Buying Algorithm (need buying API calls to be working)
 //      - buy when price has gone down by 5% or more.  based on currentPrice
 //          compared to basePrice.  buy when 5% down and currentPrice > lastPrice
 //          which would indicate the price has ended it's current drop
 //
-// DONE: Determine Binance fees
-//		- 0.1% per trade, 0.05% if paid with BNB
-//
-// 5) Selling Algorithm (need selling API calls to be working)
+// 3) Selling Algorithm (need selling API calls to be working)
 //      - submit sale order for 6% above purchase price after buy triggered
 //          and sell the same about of BTC
 //
-// 5) Set up API call for Binance (Priority)
-//		- endpoint to get BTC / BNB price
-//		- endpoint for submitting orders
-//		- endpoint for getting order history
-//		- ping exchange info daily to check limits as to not to exceed them (ie request limit)
-//			- current request limit is 1200, target 1080, 1/min from 6am to 6pm, 1/2min from 6pm to 6am
-//			- create struct to store current limits, set daily via API call
+// 1) Set up API call for Binance (Priority)
+//      - endpoint to get BTC / BNB price
+//      - endpoint for submitting orders
+//      - endpoint for getting order history
+//      - ping exchange info daily to check limits as to not to exceed them (ie request limit)
+//          - current request limit is 1200, target 1080, 1/min from 6am to 6pm, 1/2min from 6pm to 6am
+//          - create struct to store current limits, set daily via API call
 //
-// 6) Set up to run on remote server/service (not needed until trader is active)
+// 7) Set up to run on remote server/service (not needed until trader is active)
 //      - test by just pinging single API endpoint repeatedly to verify it is working,
-//			coinmarkercap for instance
+//          coinmarkercap for instance
 //
-// 7) Start with $5 trades, 10 times, with 1% difference threshold.
-//		- with worst case of .01% fees, this should equate to 10% gains, or $0.5
+// 6) Start with $5 trades, 10 times, with 1% difference threshold.
+//      - with worst case of .01% fees, this should equate to 10% gains, or $0.5
 //
-// 8) Set up log files (need to decide what is worth logging)
-//		- create log for each module and main log
-//		- log files for continue to grow until manually deleted
+// 4) Set up log files (need to decide what is worth logging)
+//      - create log for each module and main log
+//      - log files for continue to grow until manually deleted
 //
-// 9) Set up database (not needed until ready to run for extended period of time, ie 12hrs)
-// 		- install postgres
-// 		- log trades (own table)
-//		- log daily values (own table)
+// 9) Set up database (not needed until ready to run for extended period of
+// time, ie 12hrs)
+//      - install postgres
+//      - log trades (own table)
+//      - log daily values (own table)
 //
-// 10) Set up environment variables
-//		- email password
-//		- binance API key
+// 8) Set up environment variables
+//      - email password
+//      - binance API key
+//
+// 10) Work to keep 10 BNB balance
+//      - turn profit into BNB until 10 BNB balance
+//      - Set constants for Binance trading limits (BTC / BNB), work contants into algos to optimize fees
 
 // trader is the struct to control some of the functionality
 type trader struct {

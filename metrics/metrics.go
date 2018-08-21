@@ -11,10 +11,10 @@ import "fmt"
 // 1) Current Value
 //
 // 2) Last week's value
-// 		- % change
+// 		- % change in balance
 //
 // 3) Last 24hr value
-// 		- % change
+// 		- % change in balance
 //
 // 4) Number of buys
 // 		- Highest buy price

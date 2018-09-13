@@ -2,15 +2,14 @@ package api
 
 import (
 	"encoding/json"
+	"net/url"
+	"strconv"
+	"time"
 )
 
 // TODO
 //
-// 1) Create methods for each API call
-//
-// 2) Determine type of orders to execute
-//
-// 3) Finish creating structs for API responses
+// 1) Determine type of orders to execute
 
 var (
 	// BNBBTC is the binance symbol for the BNB/BTC market to get ticker price
@@ -48,6 +47,9 @@ var (
 
 	// BNBNewOrder Send in a new order.
 	BNBNewOrder = "v3/order"
+
+	// BNBTestOrder sends a test order, does not post to market
+	BNBTestOrder = BNBNewOrder + "/test"
 
 	// BNBPing test connectivity
 	BNBPing = "v1/ping"
@@ -174,30 +176,6 @@ type Fill struct {
 	CommissionAsset string `json:"commissionAsset"`
 }
 
-// Order Parameters
-// Name				Type		Mandatory	Description
-// symbol			STRING		YES
-// side				ENUM		YES
-// type				ENUM		YES
-// timeInForce		ENUM		NO
-// price			DECIMAL		NO
-// quantity			DECIMAL		YES
-// newClientOrderId	STRING		NO			A unique id for the order. Automatically generated if not sent.
-// stopPrice		DECIMAL		NO			Used with STOP_LOSS, STOP_LOSS_LIMIT, TAKE_PROFIT, and TAKE_PROFIT_LIMIT orders.
-// icebergQty		DECIMAL		NO			Used with LIMIT, STOP_LOSS_LIMIT, and TAKE_PROFIT_LIMIT to create an iceberg order.
-// newOrderRespType	ENUM		NO			Set the response JSON. ACK, RESULT, or FULL; MARKET and LIMIT order types default to FULL, all other orders default to ACK.
-// recvWindow		LONG		NO
-// timestamp		LONG		YES
-
-// Type					Additional mandatory parameters
-// LIMIT				timeInForce, quantity, price
-// MARKET				quantity
-// STOP_LOSS			quantity, stopPrice
-// STOP_LOSS_LIMIT		timeInForce, quantity, price, stopPrice
-// TAKE_PROFIT			quantity, stopPrice
-// TAKE_PROFIT_LIMIT	timeInForce, quantity, price, stopPrice
-// LIMIT_MAKER			quantity, price
-
 // NewBinanceClient creates a new api client for the Binance API
 func NewBinanceClient() *Client {
 	return NewClient(BinanceAPI, 2)
@@ -239,4 +217,52 @@ func (c *Client) Get24hrStats(symbol string) Stats24hr {
 	check(jsonErr)
 
 	return stats
+}
+
+// PostNewOrder calls the API endpoint to submit an order to Binance
+//
+// TODO Split out into specific order types, Sell BTC, Buy BTC, Sell BNB, Buy
+// BNB etc
+func (c *Client) PostNewOrder() {
+	// Order Parameters
+	// Name				Type		Mandatory	Description
+	// symbol			STRING		YES
+	// side				ENUM		YES
+	// type				ENUM		YES
+	// timeInForce		ENUM		NO
+	// price			DECIMAL		NO
+	// quantity			DECIMAL		YES
+	// newClientOrderId	STRING		NO			A unique id for the order. Automatically generated if not sent.
+	// stopPrice		DECIMAL		NO			Used with STOP_LOSS, STOP_LOSS_LIMIT, TAKE_PROFIT, and TAKE_PROFIT_LIMIT orders.
+	// icebergQty		DECIMAL		NO			Used with LIMIT, STOP_LOSS_LIMIT, and TAKE_PROFIT_LIMIT to create an iceberg order.
+	// newOrderRespType	ENUM		NO			Set the response JSON. ACK, RESULT, or FULL; MARKET and LIMIT order types default to FULL, all other orders default to ACK.
+	// recvWindow		LONG		NO
+	// timestamp		LONG		YES
+
+	// Type					Additional mandatory parameters
+	// LIMIT				timeInForce, quantity, price
+	// MARKET				quantity
+	// STOP_LOSS			quantity, stopPrice
+	// STOP_LOSS_LIMIT		timeInForce, quantity, price, stopPrice
+	// TAKE_PROFIT			quantity, stopPrice
+	// TAKE_PROFIT_LIMIT	timeInForce, quantity, price, stopPrice
+	// LIMIT_MAKER			quantity, price
+	// TODO
+	//
+	// Build order request
+	//
+	// Determine request type
+	//
+	// determine what to return
+	//
+	// test submiting test order
+	values := url.Values{}
+	values.Set("symbol", value)                                           // Mandatory
+	values.Set("side", value)                                             // Mandatory
+	values.Set("type", value)                                             // Mandatory
+	values.Set("quantity", value)                                         // Mandatory
+	values.Set("timestamp", strconv.FormatInt(time.Now().UnixNano(), 10)) // Mandatory
+	body, err := c.PostAPI(BNBTestOrder, values)
+	check(err)
+
 }

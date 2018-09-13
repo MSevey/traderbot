@@ -1,8 +1,12 @@
 package api
 
 import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
-	"net/url"
+	"fmt"
+	"os"
 	"strconv"
 	"time"
 )
@@ -12,9 +16,19 @@ import (
 // 1) Determine type of orders to execute
 
 var (
+	// BNBAPIPubKey is the public api key
+	BNBAPIPubKey = os.Getenv("bnbAPIPubKey")
+
+	// BNBAPISecretKey is the secret api key
+	BNBAPISecretKey = os.Getenv("bnbAPISecretKey")
+
 	// BNBBTC is the binance symbol for the BNB/BTC market to get ticker price
 	// Price of 1 BNB in BTC
 	BNBBTC = "BNBBTC"
+
+	// BNBBTC is the binance symbol for the BNB/BTC market to get ticker price
+	// Price of 1 BNB in BTC
+	BNBUSDT = "BNBUSDT"
 
 	// BTCUSDT is the binance symbol for the BTC/USDT market to get ticker price
 	// Price of 1 BTC in USD
@@ -57,6 +71,13 @@ var (
 	// BNBTime server time
 	BNBTime = "v1/time"
 )
+
+// ExchangeInfo is the stuct for the Binance exchange api endpoint
+type ExchangeInfo struct {
+	Timezone string `json:"timezone"`
+	ServerTime
+	BNBLimits
+}
 
 // BNBLimits are the limits for the Binance exchange API
 type BNBLimits struct {
@@ -131,9 +152,9 @@ type Asset struct {
 	Locked string `json:"locked"`
 }
 
-// ServerTIme ...
-type ServerTIme struct {
-	ServerTIme string `json:"serverTime"`
+// ServerTime ...
+type ServerTime struct {
+	ServerTime int64 `json:"serverTime"`
 }
 
 // OrderRespHeader ...
@@ -181,17 +202,45 @@ func NewBinanceClient() *Client {
 	return NewClient(BinanceAPI, 2)
 }
 
+func signature(params string) string {
+	// Create a new HMAC by defining the hash type and the key (as byte array)
+	h := hmac.New(sha256.New, []byte(BNBAPISecretKey))
+
+	// Write Data to it
+	h.Write([]byte(params))
+
+	// Get result and encode as hexadecimal string
+	return hex.EncodeToString(h.Sum(nil))
+}
+
+// GetAccountInfo calls the API endpoint that returns account info
+func (c *Client) GetAccountInfo() AccountInfo {
+	recvWindow := 5000
+	timestamp := strconv.FormatInt(time.Now().UnixNano()/int64(time.Millisecond), 10)
+	params := fmt.Sprintf("timestamp=%v&recvWindow=%v", timestamp, recvWindow)
+	sig := signature(params)
+	query := fmt.Sprintf("?%v&signature=%v", params, sig)
+	body, err := c.GetSecureAPI(c.Address + BNBAccount + query)
+	check(err)
+
+	// Get rate limits
+	account := AccountInfo{}
+	jsonErr := json.Unmarshal(body, &account)
+	check(jsonErr)
+	return account
+}
+
 // GetBinanceExchangeInfo calls the API endpoint that returns info on the binance
 // exchange
-func (c *Client) GetBinanceExchangeInfo() BNBLimits {
+func (c *Client) GetBinanceExchangeInfo() ExchangeInfo {
 	body, err := c.GetAPI(c.Address + BNBExchangeInfo)
 	check(err)
 
 	// Get rate limits
-	rl := BNBLimits{}
-	jsonErr := json.Unmarshal(body, &rl)
+	info := ExchangeInfo{}
+	jsonErr := json.Unmarshal(body, &info)
 	check(jsonErr)
-	return rl
+	return info
 }
 
 // GetCoinPrice calls the API endpoint that returns the current price for a coin
@@ -256,13 +305,13 @@ func (c *Client) PostNewOrder() {
 	// determine what to return
 	//
 	// test submiting test order
-	values := url.Values{}
-	values.Set("symbol", value)                                           // Mandatory
-	values.Set("side", value)                                             // Mandatory
-	values.Set("type", value)                                             // Mandatory
-	values.Set("quantity", value)                                         // Mandatory
-	values.Set("timestamp", strconv.FormatInt(time.Now().UnixNano(), 10)) // Mandatory
-	body, err := c.PostAPI(BNBTestOrder, values)
-	check(err)
+	// values := url.Values{}
+	// values.Set("symbol", value)                                           // Mandatory
+	// values.Set("side", value)                                             // Mandatory
+	// values.Set("type", value)                                             // Mandatory
+	// values.Set("quantity", value)                                         // Mandatory
+	// values.Set("timestamp", strconv.FormatInt(time.Now().UnixNano(), 10)) // Mandatory
+	// body, err := c.PostAPI(BNBTestOrder, values)
+	// check(err)
 
 }

@@ -248,6 +248,23 @@ func (c *Client) GetAccountInfo() AccountInfo {
 	return account
 }
 
+// GetAllOrders calls the endpoint that returns all order history fpr a given symbol
+func (c *Client) GetAllOrders(symbol string) []Order {
+	timestamp := strconv.FormatInt(time.Now().UnixNano()/int64(time.Millisecond), 10)
+	params := fmt.Sprintf("symbol=%v&timestamp=%v&recvWindow=%v", symbol, timestamp, recvWindow)
+	sig := signature(params)
+	query := fmt.Sprintf("?%v&signature=%v", params, sig)
+	body, err := c.GetSecureAPI(c.Address + BNBAllOrders + query)
+	check(err)
+
+	// Get Open Orders
+	orders := []Order{}
+	jsonErr := json.Unmarshal(body, &orders)
+	check(jsonErr)
+
+	return orders
+}
+
 // GetBinanceExchangeInfo calls the API endpoint that returns info on the binance
 // exchange
 func (c *Client) GetBinanceExchangeInfo() ExchangeInfo {

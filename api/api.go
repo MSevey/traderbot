@@ -19,7 +19,7 @@ type Client struct {
 
 // check pulls out the duplicate error checking code
 //
-// TODO: Replace with log to file
+// TODO: Replace with log to file (Logrus)
 func check(e error) {
 	if e != nil {
 		log.Fatal(e)
@@ -58,6 +58,22 @@ func (c *Client) PostAPI(url string, data url.Values) ([]byte, error) {
 	if err != nil {
 		return []byte{}, err
 	}
+
+	return ioutil.ReadAll(res.Body)
+}
+
+// GetSecureAPI submits a new get request to the intended url endpoint with the
+// public api key in the header
+func (c *Client) GetSecureAPI(url string) ([]byte, error) {
+	apiClient := http.Client{
+		Timeout: c.Timeout,
+	}
+
+	req, err := http.NewRequest("GET", url, nil)
+	check(err)
+	req.Header.Add("X-MBX-APIKEY", BNBAPIPubKey)
+	res, err := apiClient.Do(req)
+	check(err)
 
 	return ioutil.ReadAll(res.Body)
 }

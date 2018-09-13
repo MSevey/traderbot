@@ -15,6 +15,12 @@ import (
 //
 // 1) Determine type of orders to execute
 
+const (
+	// recvWindow is the allowable difference between the submitted timestamp
+	// and the servertime that an API call will be accepted
+	recvWindow = 5000
+)
+
 var (
 	// BNBAPIPubKey is the public api key
 	BNBAPIPubKey = os.Getenv("bnbAPIPubKey")
@@ -213,9 +219,21 @@ func signature(params string) string {
 	return hex.EncodeToString(h.Sum(nil))
 }
 
+// Get24hrStats calls the API endpoint that returns the 24hr statistics on a
+// coin
+func (c *Client) Get24hrStats(symbol string) Stats24hr {
+	body, err := c.GetAPI(c.Address + BNB24hrStats + "?symbol=" + symbol)
+	check(err)
+
+	stats := Stats24hr{}
+	jsonErr := json.Unmarshal(body, &stats)
+	check(jsonErr)
+
+	return stats
+}
+
 // GetAccountInfo calls the API endpoint that returns account info
 func (c *Client) GetAccountInfo() AccountInfo {
-	recvWindow := 5000
 	timestamp := strconv.FormatInt(time.Now().UnixNano()/int64(time.Millisecond), 10)
 	params := fmt.Sprintf("timestamp=%v&recvWindow=%v", timestamp, recvWindow)
 	sig := signature(params)
@@ -223,7 +241,7 @@ func (c *Client) GetAccountInfo() AccountInfo {
 	body, err := c.GetSecureAPI(c.Address + BNBAccount + query)
 	check(err)
 
-	// Get rate limits
+	// Get Account Info
 	account := AccountInfo{}
 	jsonErr := json.Unmarshal(body, &account)
 	check(jsonErr)
@@ -236,7 +254,7 @@ func (c *Client) GetBinanceExchangeInfo() ExchangeInfo {
 	body, err := c.GetAPI(c.Address + BNBExchangeInfo)
 	check(err)
 
-	// Get rate limits
+	// Get ExchangeInfo
 	info := ExchangeInfo{}
 	jsonErr := json.Unmarshal(body, &info)
 	check(jsonErr)
@@ -255,17 +273,21 @@ func (c *Client) GetCoinPrice(symbol string) TickerPrice {
 	return price
 }
 
-// Get24hrStats calls the API endpoint that returns the 24hr statistics on a
-// coin
-func (c *Client) Get24hrStats(symbol string) Stats24hr {
-	body, err := c.GetAPI(c.Address + BNB24hrStats + "?symbol=" + symbol)
+// GetOpenOrders calls the endpoint that returns all open orders
+func (c *Client) GetOpenOrders() []Order {
+	timestamp := strconv.FormatInt(time.Now().UnixNano()/int64(time.Millisecond), 10)
+	params := fmt.Sprintf("timestamp=%v&recvWindow=%v", timestamp, recvWindow)
+	sig := signature(params)
+	query := fmt.Sprintf("?%v&signature=%v", params, sig)
+	body, err := c.GetSecureAPI(c.Address + BNBOpenOrders + query)
 	check(err)
 
-	stats := Stats24hr{}
-	jsonErr := json.Unmarshal(body, &stats)
+	// Get Open Orders
+	orders := []Order{}
+	jsonErr := json.Unmarshal(body, &orders)
 	check(jsonErr)
 
-	return stats
+	return orders
 }
 
 // PostNewOrder calls the API endpoint to submit an order to Binance

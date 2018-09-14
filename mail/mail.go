@@ -5,7 +5,12 @@ import (
 	"fmt"
 	"log"
 	"net/smtp"
+	"os"
 	"strings"
+)
+
+var (
+	gmailPassword = os.Getenv("gmailPassword")
 )
 
 // Mail is a helper struct for email updates
@@ -35,8 +40,8 @@ func SendEmail() {
 	smtpServer := SMTPServer{host: "smtp.gmail.com", port: "465"}
 
 	log.Println(smtpServer.host)
-	//build an auth
-	auth := smtp.PlainAuth("", mail.senderID, "password", smtpServer.host)
+	// build an auth
+	auth := smtp.PlainAuth("", mail.senderID, gmailPassword, smtpServer.host)
 
 	// Gmail will reject connection if it's not secure
 	// TLS config

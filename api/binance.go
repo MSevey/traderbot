@@ -1,5 +1,9 @@
 package api
 
+// All api calls have a weight of 1 unless otherwise specified
+//
+// Binance fees 0.75% per trade if paid with BNB
+
 import (
 	"crypto/hmac"
 	"crypto/sha256"
@@ -14,7 +18,9 @@ import (
 
 // TODO
 //
-// 1) Determine type of orders to execute
+// 1) add weight as a return value from calls to then increment trader details
+//
+// 2) Look at different order types to help optimize trading algo
 
 const (
 	// recvWindow is the allowable difference between the submitted timestamp
@@ -234,6 +240,8 @@ func (c *Client) Get24hrStats(symbol string) Stats24hr {
 }
 
 // GetAccountInfo calls the API endpoint that returns account info
+//
+// Weight = 5
 func (c *Client) GetAccountInfo() AccountInfo {
 	timestamp := strconv.FormatInt(time.Now().UnixNano()/int64(time.Millisecond), 10)
 	params := fmt.Sprintf("timestamp=%v&recvWindow=%v", timestamp, recvWindow)
@@ -250,6 +258,8 @@ func (c *Client) GetAccountInfo() AccountInfo {
 }
 
 // GetAllOrders calls the endpoint that returns all order history fpr a given symbol
+//
+// Weight 5
 func (c *Client) GetAllOrders(symbol string) []Order {
 	timestamp := strconv.FormatInt(time.Now().UnixNano()/int64(time.Millisecond), 10)
 	params := fmt.Sprintf("symbol=%v&timestamp=%v&recvWindow=%v", symbol, timestamp, recvWindow)
@@ -292,6 +302,8 @@ func (c *Client) GetCoinPrice(symbol string) TickerPrice {
 }
 
 // GetOpenOrders calls the endpoint that returns all open orders
+//
+// Weight 1 with symbol, 40 w/o symbol
 func (c *Client) GetOpenOrders() []Order {
 	timestamp := strconv.FormatInt(time.Now().UnixNano()/int64(time.Millisecond), 10)
 	params := fmt.Sprintf("timestamp=%v&recvWindow=%v", timestamp, recvWindow)

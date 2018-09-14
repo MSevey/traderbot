@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"os"
 	"strconv"
 	"time"
@@ -307,50 +308,53 @@ func (c *Client) GetOpenOrders() []Order {
 	return orders
 }
 
-// PostNewOrder calls the API endpoint to submit an order to Binance
-//
-// TODO Split out into specific order types, Sell BTC, Buy BTC, Sell BNB, Buy
-// BNB etc
-func (c *Client) PostNewOrder() {
-	// Order Parameters
-	// Name				Type		Mandatory	Description
-	// symbol			STRING		YES
-	// side				ENUM		YES
-	// type				ENUM		YES
-	// timeInForce		ENUM		NO
-	// price			DECIMAL		NO
-	// quantity			DECIMAL		YES
-	// newClientOrderId	STRING		NO			A unique id for the order. Automatically generated if not sent.
-	// stopPrice		DECIMAL		NO			Used with STOP_LOSS, STOP_LOSS_LIMIT, TAKE_PROFIT, and TAKE_PROFIT_LIMIT orders.
-	// icebergQty		DECIMAL		NO			Used with LIMIT, STOP_LOSS_LIMIT, and TAKE_PROFIT_LIMIT to create an iceberg order.
-	// newOrderRespType	ENUM		NO			Set the response JSON. ACK, RESULT, or FULL; MARKET and LIMIT order types default to FULL, all other orders default to ACK.
-	// recvWindow		LONG		NO
-	// timestamp		LONG		YES
+// Order Parameters
+// Name				Type		Mandatory	Description
+// symbol			STRING		YES
+// side				ENUM		YES
+// type				ENUM		YES
+// timeInForce		ENUM		NO
+// price			DECIMAL		NO
+// quantity			DECIMAL		YES
+// newClientOrderId	STRING		NO			A unique id for the order. Automatically generated if not sent.
+// stopPrice		DECIMAL		NO			Used with STOP_LOSS, STOP_LOSS_LIMIT, TAKE_PROFIT, and TAKE_PROFIT_LIMIT orders.
+// icebergQty		DECIMAL		NO			Used with LIMIT, STOP_LOSS_LIMIT, and TAKE_PROFIT_LIMIT to create an iceberg order.
+// newOrderRespType	ENUM		NO			Set the response JSON. ACK, RESULT, or FULL; MARKET and LIMIT order types default to FULL, all other orders default to ACK.
+// recvWindow		LONG		NO
+// timestamp		LONG		YES
 
-	// Type					Additional mandatory parameters
-	// LIMIT				timeInForce, quantity, price
-	// MARKET				quantity
-	// STOP_LOSS			quantity, stopPrice
-	// STOP_LOSS_LIMIT		timeInForce, quantity, price, stopPrice
-	// TAKE_PROFIT			quantity, stopPrice
-	// TAKE_PROFIT_LIMIT	timeInForce, quantity, price, stopPrice
-	// LIMIT_MAKER			quantity, price
-	// TODO
-	//
-	// Build order request
-	//
-	// Determine request type
-	//
-	// determine what to return
-	//
-	// test submiting test order
-	// values := url.Values{}
-	// values.Set("symbol", value)                                           // Mandatory
-	// values.Set("side", value)                                             // Mandatory
-	// values.Set("type", value)                                             // Mandatory
-	// values.Set("quantity", value)                                         // Mandatory
-	// values.Set("timestamp", strconv.FormatInt(time.Now().UnixNano(), 10)) // Mandatory
-	// body, err := c.PostAPI(BNBTestOrder, values)
-	// check(err)
+// Type					Additional mandatory parameters
+// LIMIT				timeInForce, quantity, price
+// MARKET				quantity
+// STOP_LOSS			quantity, stopPrice
+// STOP_LOSS_LIMIT		timeInForce, quantity, price, stopPrice
+// TAKE_PROFIT			quantity, stopPrice
+// TAKE_PROFIT_LIMIT	timeInForce, quantity, price, stopPrice
+// LIMIT_MAKER			quantity, price
 
+// PostNewLimitOrder calls the API endpoint to submit a limit order to Binance
+func (c *Client) PostNewLimitOrder(symbol, side string, quantity float64) RESULT {
+
+	timestamp := strconv.FormatInt(time.Now().UnixNano()/int64(time.Millisecond), 10)
+	values := url.Values{}
+	values.Set("symbol", symbol)                                       // Mandatory
+	values.Set("side", side)                                           // Mandatory
+	values.Set("type", "LIMIT")                                        // Mandatory
+	values.Set("timeInForce", "GTC")                                   // Mandatory
+	values.Set("quantity", strconv.FormatFloat(quantity, 'f', -1, 64)) // Mandatory
+	values.Set("newOrderRespType", "RESULT")                           //
+	values.Set("recvWindow", strconv.FormatInt(recvWindow, 10))        //
+	values.Set("timestamp", timestamp)                                 // Mandatory
+	params := values.Encode()
+	sig := signature(params)
+	query := fmt.Sprintf("?%v&signature=%v", params, sig)
+
+	body, err := c.PostSecureAPI(c.Address + BNBTestOrder + query)
+	check(err)
+
+	result := RESULT{}
+	jsonErr := json.Unmarshal(body, &result)
+	check(jsonErr)
+
+	return result
 }

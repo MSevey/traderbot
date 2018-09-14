@@ -3,12 +3,13 @@ package main
 import (
 	"fmt"
 	"log"
-	"sync"
+	"os"
+	"os/signal"
+	"strconv"
 	"time"
 
-	"github.com/MSevey/trader/api"
-	"github.com/MSevey/trader/mail"
-	"github.com/MSevey/trader/metrics"
+	"github.com/MSevey/traderBot/api"
+	"github.com/MSevey/traderBot/trader"
 )
 
 // This will be a trader for Binance.
@@ -18,10 +19,30 @@ import (
 
 // TODO
 //
-// DONE: set up emailing
+//  FOR TESTING START WITH LOGGING STATS ON WHAT TRIGGERED THE BUY OF SELL,
+//  HIGH/LOW PRICES, CONDITION THAT TRIGGERED ORDER, ETC. SUBMIT TEST ORDERS
 //
-// DONE: Determine Binance fees
-//      - 0.1% per trade, 0.05% if paid with BNB
+//  LOG PRICE AFTER BUY AND SELL ORDERS TO SEE IF PRICE CONTINUES TO GO
+//  UP/DOWN OR IF IT SWITCHED DIRECTIONS
+//
+// 2) Buying Algorithm (need buying API calls to be working)
+//      - buy when price has gone down by 5% or more.  based on currentPrice
+//          compared to basePrice.  buy when 5% down and currentPrice > lastPrice
+//          which would indicate the price has ended it's current drop
+//		- Need to update to account for buys and then price increase and impact on base price
+//
+// 3) Selling Algorithm (need selling API calls to be working)
+//      - submit sale order for 6% above purchase price after buy triggered
+//          and sell the same about of BTC
+//		- create heap of buy orders based on purchase price
+//			when decided to sell use lowest price in heap and sell that quantity,
+//			compare 5% above that price
+//		- Heap needs to be used differently.  Create either submit limt order instantly of
+//		create go routine to handle selling
+//
+// 4) Set up log files (need to decide what is worth logging)
+//      - create log for each module and main log
+//      - log files for continue to grow until manually deleted
 //
 // 5) set up metric reporting (need trader to be working to determine how to
 // calculate metrics)
@@ -31,39 +52,9 @@ import (
 //      - % profit all time
 //      - number of pending sells
 //
-//  FOR TESTING START WITH LOGGING STATS ON WHAT TRIGGERED THE BUY OF SELL,
-//  HIGH/LOW PRICES, CONDITION THAT TRIGGERED ORDER, ETC. SUBMIT TEST ORDERS
-//
-//  LOG PRICE AFTER BUY AND SELL ORDERS TO SEE IF PRICE CONTINUES TO GO
-//	UP/DOWN OR IF IT SWITCHED DIRECTIONS
-//
-// 2) Buying Algorithm (need buying API calls to be working)
-//      - buy when price has gone down by 5% or more.  based on currentPrice
-//          compared to basePrice.  buy when 5% down and currentPrice > lastPrice
-//          which would indicate the price has ended it's current drop
-//
-// 3) Selling Algorithm (need selling API calls to be working)
-//      - submit sale order for 6% above purchase price after buy triggered
-//          and sell the same about of BTC
-//
-// 1) Set up API call for Binance (Priority)
-//      - endpoint to get BTC / BNB price
-//      - endpoint for submitting orders
-//      - endpoint for getting order history
-//      - ping exchange info daily to check limits as to not to exceed them (ie request limit)
-//          - current request limit is 1200, target 1080, 1/min from 6am to 6pm, 1/2min from 6pm to 6am
-//          - create struct to store current limits, set daily via API call
-//
 // 7) Set up to run on remote server/service (not needed until trader is active)
 //      - test by just pinging single API endpoint repeatedly to verify it is working,
 //          coinmarkercap for instance
-//
-// 6) Start with $5 trades, 10 times, with 1% difference threshold.
-//      - with worst case of .01% fees, this should equate to 10% gains, or $0.5
-//
-// 4) Set up log files (need to decide what is worth logging)
-//      - create log for each module and main log
-//      - log files for continue to grow until manually deleted
 //
 // 9) Set up database (not needed until ready to run for extended period of
 // time, ie 12hrs)
@@ -71,54 +62,59 @@ import (
 //      - log trades (own table)
 //      - log daily values (own table)
 //
-// 8) Set up environment variables
-//      - email password
-//      - binance API key
-//
 // 10) Work to keep 10 BNB balance
 //      - turn profit into BNB until 10 BNB balance
 //      - Set constants for Binance trading limits (BTC / BNB), work contants into algos to optimize fees
+//
+// 11) Start with 10 sec delays between any API call loops, update to check in
+// realtime if weight limits have been met.  Look at slice or map for weights
+// and timestamps to analyze
+//
+// 12) Before pushing to github or any online repo, remove commit containing
+// email password
 
-// trader is the struct to control some of the functionality
-type trader struct {
-	buyAmount     float64 // amount of BTC to buy at a time, set to 0.001 for now (~$6.60 as of 7/6/18)
-	basePrice     float64 // price to be used for comparison
-	lastPrice     float64 // price recorded from last api call
-	currentPrice  float64 // price recorded from current api call
-	dailyHigh     float64 // hight point of the past 24hrs
-	dailyLow      float64 // low point of the past 24hrs
-	buyLimit      bool    // Has the buy limit been reached
-	lastHighPoint float64 // The last price high point to compare against
-	numOrders     int     // Number of current active orders
+const (
+	// the following the time intervals that the loops should run
+	binanceLoopTime = 1 * time.Second // if running all day set to 10s
+	metricsLoopTime = 12 * time.Hour
 
-	mu sync.Mutex
-}
+	bnbBalanceTarget = 10 // set but binance trading levels
+)
 
 func main() {
 	// Create channel to control go routines
 	//
 	// TODO: look at importing Nebulous Labs thread repo
 	done := make(chan struct{})
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, os.Interrupt)
 
-	// Metrics goroutine
-	fmt.Println("go metrics")
-	go metrics.Test()
+	// // Metrics goroutine
+	// fmt.Println("go metrics")
+	// go metrics.Test()
 
-	// coinMarketCap API goroutine
-	fmt.Println("go coin")
-	go coinMarketCap(done)
+	// // coinMarketCap API goroutine
+	// fmt.Println("go coin")
+	// go coinMarketCap(done)
 
 	// binance API goroutine
 	fmt.Println("go binance")
 	go binance(done)
 
-	time.Sleep(4 * time.Second)
-	close(done)
+	// // Sending Email
+	// //
+	// // Build Mail object
+	// mail.SendEmail()
 
-	// Sending Email
-	//
-	// Build Mail object
-	mail.SendEmail()
+	// Listen for crtl c to end
+	for {
+		select {
+		case <-sig:
+			close(done)
+			return
+		default:
+		}
+	}
 }
 
 // check pulls out the duplicate error checking code
@@ -130,38 +126,68 @@ func check(e error) {
 	}
 }
 
-// TODO: refactor code for unmarshalling json and handling errors
-// func jsonUnmarshal(data []byte,)
-
-//
+// binance is the current go routine that controlls all the binance calls
 func binance(done chan struct{}) {
-	fmt.Println("binance")
+	// Initialize trader
+	t := trader.NewTrader()
+
 	// Create client for binance requests
 	binanceClient := api.NewBinanceClient()
 
-	fmt.Println("Binance Rate limits")
-	rl := binanceClient.GetBinanceExchangeInfo()
-	fmt.Println(rl)
+	// Get account information
+	fmt.Println("Binance Account Info")
+	account := binanceClient.GetAccountInfo()
+	if !account.CanTrade {
+		panic("Can't Trade!!")
+	}
 
-	// Get BNB to BTC price
-	fmt.Println("Binance BTCUSDT price")
-	price := binanceClient.GetCoinPrice(api.BTCUSDT)
-	fmt.Println(price.Price)
+	// Update balances
+	t.UpdateBalances(account)
 
-	// Get BNB to BTC 24hr statistics
-	fmt.Println("Binance BTCUSDT 24hr stats")
-	stats := binanceClient.Get24hrStats(api.BTCUSDT)
-	fmt.Println(stats)
+	fmt.Println("btcBalance", t.BtcBalance())
+	fmt.Println("bnbBalance", t.BnbBalance())
+	fmt.Println("usdtBalance", t.UsdtBalance())
+	fmt.Println("minBalance", t.MinBalance())
 
-	// Loop to test go routine
 	for {
+		// Ping exchange to get up to date limits
+		info := binanceClient.GetBinanceExchangeInfo()
+		t.UpdateLimits(info)
+
+		// Buy BTC
+		if t.CanBuyBTC() {
+			t.Buyer.TryBTCBuy(binanceClient)
+
+		}
+
+		if t.MinBalance() < t.BtcBalance() {
+			// Buy BNB
+			if t.BnbBalance() > bnbBalanceTarget {
+				t.Buyer.TryBNBBuy(binanceClient)
+			}
+			//Sell BTC
+			t.TryBTCSell(binanceClient)
+		}
+
+		// Update Balances
+		account := binanceClient.GetAccountInfo()
+		if !account.CanTrade {
+			panic("Can't Trade!!")
+		}
+		t.UpdateBalances(account)
+
 		select {
 		case <-done:
+			// persist minBalance
+			if err := os.Setenv("binanceMinBalance", strconv.FormatFloat(t.MinBalance(), 'f', -1, 64)); err != nil {
+				panic(err)
+			}
+			// submit all order heap as sell orders
 			return
 		default:
 		}
 		fmt.Println("binance loop")
-		time.Sleep(time.Second)
+		time.Sleep(binanceLoopTime)
 	}
 }
 

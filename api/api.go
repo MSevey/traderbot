@@ -77,3 +77,19 @@ func (c *Client) GetSecureAPI(url string) ([]byte, error) {
 
 	return ioutil.ReadAll(res.Body)
 }
+
+// PostSecureAPI submits a new post request to the intended url endpoint with
+// the public api key in the header
+func (c *Client) PostSecureAPI(url string) ([]byte, error) {
+	apiClient := http.Client{
+		Timeout: c.Timeout,
+	}
+
+	req, err := http.NewRequest("POST", url, nil)
+	check(err)
+	req.Header.Add("X-MBX-APIKEY", BNBAPIPubKey)
+	res, err := apiClient.Do(req)
+	check(err)
+
+	return ioutil.ReadAll(res.Body)
+}

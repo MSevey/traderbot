@@ -3,13 +3,13 @@ package trader
 import (
 	"container/heap"
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 	"sync"
 	"time"
 
 	"github.com/MSevey/traderBot/api"
+	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -18,6 +18,8 @@ const (
 	buyBalanceLimit = 5    // buy $5 at a time
 	diffLimit       = 0.01 // 1% to start
 )
+
+var traderLog = logrus.New()
 
 // Trader is the struct to control some of the functionality
 type Trader struct {
@@ -127,7 +129,7 @@ func (boh *buyOrderHeap) update(o *order, symbol string, price, quantity float64
 // TODO: Replace with log to file (Logrus)
 func check(e error) {
 	if e != nil {
-		log.Fatal(e)
+		traderLog.Debug(e)
 	}
 }
 
@@ -139,6 +141,19 @@ func NewTrader() *Trader {
 	buyOrderHeap := make(buyOrderHeap, 0)
 	heap.Init(&buyOrderHeap)
 	t.Buyer.orders = buyOrderHeap
+
+	// The API for setting attributes is a little different than the package level
+	// exported logger. See Godoc.
+	traderLog.Out = os.Stdout
+
+	// You could set this to any `io.Writer` such as a file
+	file, err := os.OpenFile("binance.log", os.O_CREATE|os.O_WRONLY, 0666)
+	if err == nil {
+		traderLog.Out = file
+		traderLog.Debug("Binance Trader created")
+	} else {
+		traderLog.Debug("Failed to create Binance Log")
+	}
 	return t
 }
 
@@ -155,19 +170,16 @@ func (b *Buyer) TryBNBBuy(c *api.Client) {
 	// Check to make sure base price is set
 	if b.bnbBasePrice == 0 {
 		b.bnbBasePrice = bnbprice
-		fmt.Println("TryBNBBuy: update base price")
 		return
 	}
 	// Compare to previous price
 	if bnbprice <= b.bnbLastPrice || b.bnbLastPrice == 0 {
 		b.bnbLastPrice = bnbprice
-		fmt.Println("TryBNBBuy: update last price")
 		return
 	}
 
 	diff := (b.bnbBasePrice - bnbprice) / b.bnbBasePrice
 	if diff < diffLimit {
-		fmt.Println("TryBNBBuy: diff not sufficient", diff)
 		return
 	}
 
@@ -176,12 +188,13 @@ func (b *Buyer) TryBNBBuy(c *api.Client) {
 	//  - change to api order
 	//  - how to confirm order went through??
 	quantity := buyBalanceLimit / b.btcLastPrice * bnbprice
-	fmt.Println("Buy conditions met")
-	fmt.Println("bnbBasePrice", b.bnbBasePrice)
-	fmt.Println("bnbLastPrice", b.bnbLastPrice)
-	fmt.Println("bnbprice", bnbprice)
-	fmt.Println("diff", diff)
-	fmt.Println("quantity", quantity)
+	traderLog.WithFields(logrus.Fields{
+		"bnbBasePrice": b.bnbBasePrice,
+		"bnbLastPrice": b.bnbLastPrice,
+		"bnbprice":     bnbprice,
+		"diff":         diff,
+		"quantity":     quantity,
+	}).Debug("***Buy conditions met***")
 }
 
 // TryBTCBuy tries to buy btc
@@ -197,19 +210,16 @@ func (b *Buyer) TryBTCBuy(c *api.Client) {
 	// Check to make sure base price is set
 	if b.btcBasePrice == 0 {
 		b.btcBasePrice = btcprice
-		fmt.Println("TryBTCBuy: update base price")
 		return
 	}
 	// Compare to previous price
 	if btcprice <= b.btcLastPrice || b.btcLastPrice == 0 {
 		b.btcLastPrice = btcprice
-		fmt.Println("TryBNBBuy: update last price")
 		return
 	}
 
 	diff := (b.btcBasePrice - btcprice) / b.btcBasePrice
 	if diff < diffLimit {
-		fmt.Println("TryBTCBuy: diff not sufficient", diff)
 		return
 	}
 
@@ -218,12 +228,13 @@ func (b *Buyer) TryBTCBuy(c *api.Client) {
 	//  - change to api order
 	//  - how to confirm order went through??
 	quantity := buyBalanceLimit / btcprice
-	fmt.Println("Buy conditions met")
-	fmt.Println("btcBasePrice", b.btcBasePrice)
-	fmt.Println("btcLastPrice", b.btcLastPrice)
-	fmt.Println("btcprice", btcprice)
-	fmt.Println("diff", diff)
-	fmt.Println("quantity", quantity)
+	traderLog.WithFields(logrus.Fields{
+		"btcBasePrice": b.btcBasePrice,
+		"btcLastPrice": b.btcLastPrice,
+		"btcprice":     btcprice,
+		"diff":         diff,
+		"quantity":     quantity,
+	}).Debug("***Buy conditions met***")
 
 	// Add to Heap
 	order := &order{
@@ -256,13 +267,11 @@ func (t *Trader) TryBTCSell(c *api.Client) {
 
 		// Compare to previous order price
 		if btcprice < order.price {
-			fmt.Println("TryBTCSell: order price greater")
 			return
 		}
 
 		diff := (btcprice-order.price)/order.price - 1
 		if diff < diffLimit {
-			fmt.Println("TryBTCSell: diff not sufficient", diff)
 			return
 		}
 
@@ -270,12 +279,13 @@ func (t *Trader) TryBTCSell(c *api.Client) {
 		// TODO
 		//  - change to api order
 		//  - how to confirm order went through??
-		fmt.Println("Sell conditions met")
-		fmt.Println("btcBasePrice", t.Seller.btcBasePrice)
-		fmt.Println("btcLastPrice", t.Seller.btcLastPrice)
-		fmt.Println("btcprice", btcprice)
-		fmt.Println("diff", diff)
-		fmt.Println("quantity", order.quantity)
+		traderLog.WithFields(logrus.Fields{
+			"btcBasePrice": t.Seller.btcBasePrice,
+			"btcLastPrice": t.Seller.btcLastPrice,
+			"btcprice":     btcprice,
+			"diff":         diff,
+			"quantity":     order.quantity,
+		}).Debug("***Sell conditions met***")
 
 		// if no sell push order back onto heap
 		heap.Push(&t.Buyer.orders, order)
@@ -286,19 +296,16 @@ func (t *Trader) TryBTCSell(c *api.Client) {
 	// Check to make sure base price is set
 	if t.Seller.btcBasePrice == 0 {
 		t.Seller.btcBasePrice = btcprice
-		fmt.Println("TryBTCSell: update base price")
 		return
 	}
 	// Compare to previous price
 	if btcprice >= t.Seller.btcLastPrice {
 		t.Seller.btcLastPrice = btcprice
-		fmt.Println("TryBTCSell: update last price")
 		return
 	}
 
 	diff := (btcprice-t.Seller.btcBasePrice)/t.Seller.btcBasePrice - 1
 	if diff < diffLimit {
-		fmt.Println("TryBTCSell: diff not sufficient", diff)
 		return
 	}
 
@@ -307,12 +314,13 @@ func (t *Trader) TryBTCSell(c *api.Client) {
 	//  - change to api order
 	//  - how to confirm order went through??
 	quantity := buyBalanceLimit / t.Seller.btcBasePrice
-	fmt.Println("Buy conditions met")
-	fmt.Println("btcBasePrice", t.Seller.btcBasePrice)
-	fmt.Println("btcLastPrice", t.Seller.btcLastPrice)
-	fmt.Println("btcprice", btcprice)
-	fmt.Println("diff", diff)
-	fmt.Println("quantity", quantity)
+	traderLog.WithFields(logrus.Fields{
+		"btcBasePrice": t.Seller.btcBasePrice,
+		"btcLastPrice": t.Seller.btcLastPrice,
+		"btcprice":     btcprice,
+		"diff":         diff,
+		"quantity":     quantity,
+	}).Debug("***Sell conditions met***")
 
 }
 

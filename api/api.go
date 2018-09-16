@@ -2,11 +2,14 @@ package api
 
 import (
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/sirupsen/logrus"
 )
+
+var apiLog = logrus.New()
 
 // Client is a helper struct for API calls
 type Client struct {
@@ -22,7 +25,7 @@ type Client struct {
 // TODO: Replace with log to file (Logrus)
 func check(e error) {
 	if e != nil {
-		log.Fatal(e)
+		apiLog.Debug(e)
 	}
 }
 

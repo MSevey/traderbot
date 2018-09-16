@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/signal"
 	"strconv"
@@ -10,6 +9,7 @@ import (
 
 	"github.com/MSevey/traderBot/api"
 	"github.com/MSevey/traderBot/trader"
+	"github.com/sirupsen/logrus"
 )
 
 // This will be a trader for Binance.
@@ -81,7 +81,27 @@ const (
 	bnbBalanceTarget = 10 // set but binance trading levels
 )
 
+var log = logrus.New()
+
 func main() {
+	// The API for setting attributes is a little different than the package level
+	// exported logger. See Godoc.
+	log.Out = os.Stdout
+
+	// You could set this to any `io.Writer` such as a file
+	file, err := os.OpenFile("main.log", os.O_CREATE|os.O_WRONLY, 0666)
+	if err == nil {
+		log.Out = file
+	} else {
+		log.Info("Testing Logrus")
+	}
+
+	log.Info("Main file logging")
+	// log.WithFields(logrus.Fields{
+	// 	"animal": "tiger",
+	// 	"size":   10,
+	// }).Info("A group of walrus emerges from the ocean")
+
 	// Create channel to control go routines
 	//
 	// TODO: look at importing Nebulous Labs thread repo
@@ -98,7 +118,6 @@ func main() {
 	// go coinMarketCap(done)
 
 	// binance API goroutine
-	fmt.Println("go binance")
 	go binance(done)
 
 	// // Sending Email
@@ -122,7 +141,7 @@ func main() {
 // TODO: Replace with log to file
 func check(e error) {
 	if e != nil {
-		log.Fatal(e)
+		log.Debug(e)
 	}
 }
 
@@ -138,7 +157,7 @@ func binance(done chan struct{}) {
 	fmt.Println("Binance Account Info")
 	account := binanceClient.GetAccountInfo()
 	if !account.CanTrade {
-		panic("Can't Trade!!")
+		log.Warn("Can't Trade!!")
 	}
 
 	// Update balances
@@ -162,7 +181,7 @@ func binance(done chan struct{}) {
 
 		if t.MinBalance() < t.BtcBalance() {
 			// Buy BNB
-			if t.BnbBalance() > bnbBalanceTarget {
+			if t.BnbBalance() < bnbBalanceTarget {
 				t.Buyer.TryBNBBuy(binanceClient)
 			}
 			//Sell BTC
@@ -180,13 +199,12 @@ func binance(done chan struct{}) {
 		case <-done:
 			// persist minBalance
 			if err := os.Setenv("binanceMinBalance", strconv.FormatFloat(t.MinBalance(), 'f', -1, 64)); err != nil {
-				panic(err)
+				log.Warn(err)
 			}
 			// submit all order heap as sell orders
 			return
 		default:
 		}
-		fmt.Println("binance loop")
 		time.Sleep(binanceLoopTime)
 	}
 }

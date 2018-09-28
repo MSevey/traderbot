@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -21,12 +22,26 @@ type Client struct {
 }
 
 // check pulls out the duplicate error checking code
-//
-// TODO: Replace with log to file (Logrus)
 func check(e error) {
 	if e != nil {
 		apiLog.Debug(e)
 	}
+}
+
+// InitLogger initializes the logger for the api
+func InitLogger() {
+	apiLog.SetLevel(logrus.DebugLevel)
+	// // You could set this to any `io.Writer` such as a file
+	// file, err := os.OpenFile("api/api.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	// if err == nil {
+	// 	apiLog.Out = file
+	// } else {
+	// 	apiLog.Warn("File Not Created")
+	// }
+
+	apiLog.Out = os.Stdout
+
+	apiLog.Info("API file logging")
 }
 
 // NewClient creates a new client to be used for API calls
@@ -76,7 +91,9 @@ func (c *Client) GetSecureAPI(url string) ([]byte, error) {
 	check(err)
 	req.Header.Add("X-MBX-APIKEY", BNBAPIPubKey)
 	res, err := apiClient.Do(req)
-	check(err)
+	if err != nil {
+		return []byte{}, err
+	}
 
 	return ioutil.ReadAll(res.Body)
 }
@@ -92,7 +109,9 @@ func (c *Client) PostSecureAPI(url string) ([]byte, error) {
 	check(err)
 	req.Header.Add("X-MBX-APIKEY", BNBAPIPubKey)
 	res, err := apiClient.Do(req)
-	check(err)
+	if err != nil {
+		return []byte{}, err
+	}
 
 	return ioutil.ReadAll(res.Body)
 }

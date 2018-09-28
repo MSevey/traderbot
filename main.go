@@ -25,11 +25,18 @@ import (
 //  LOG PRICE AFTER BUY AND SELL ORDERS TO SEE IF PRICE CONTINUES TO GO
 //  UP/DOWN OR IF IT SWITCHED DIRECTIONS
 //
+// 1) Need to update error checking to be more uptime resilient.  Handling errors better
+//		- ex, if account api fails the program panics because CanTrade is false by default
+//
 // 2) Buying Algorithm (need buying API calls to be working)
 //      - buy when price has gone down by 5% or more.  based on currentPrice
 //          compared to basePrice.  buy when 5% down and currentPrice > lastPrice
 //          which would indicate the price has ended it's current drop
 //		- Need to update to account for buys and then price increase and impact on base price
+//		- think about how to reset base price (maybe after certain amount of time without any buys)
+//		- think about updating buy difference target based on frequency of buys, too many buys close
+//			together means price is dropping a lot and not buying at lowest value
+//			- Have different limits for BTC and BNB
 //
 // 3) Selling Algorithm (need selling API calls to be working)
 //      - submit sale order for 6% above purchase price after buy triggered
@@ -37,8 +44,11 @@ import (
 //		- create heap of buy orders based on purchase price
 //			when decided to sell use lowest price in heap and sell that quantity,
 //			compare 5% above that price
-//		- Heap needs to be used differently.  Create either submit limt order instantly of
+//		- Heap needs to be used differently.  Create either submit limit order instantly of
 //		create go routine to handle selling
+//		- think about how to reset base price (maybe after certain amount of time without any sales)
+//		- think about updating sell difference target based on frequency of buys, too many sales close
+//			together means price is rising a lot and not selling at highest value
 //
 // 4) Set up log files (need to decide what is worth logging)
 //      - create log for each module and main log
@@ -75,7 +85,7 @@ import (
 
 const (
 	// the following the time intervals that the loops should run
-	binanceLoopTime = 1 * time.Second // if running all day set to 10s
+	binanceLoopTime = 2 * time.Second // if running all day set to 10s
 	metricsLoopTime = 12 * time.Hour
 
 	bnbBalanceTarget = 10 // set but binance trading levels
@@ -83,13 +93,10 @@ const (
 
 var log = logrus.New()
 
-func main() {
-	// The API for setting attributes is a little different than the package level
-	// exported logger. See Godoc.
-	log.Out = os.Stdout
-
+func initLogger() {
+	log.SetLevel(logrus.DebugLevel)
 	// You could set this to any `io.Writer` such as a file
-	file, err := os.OpenFile("main.log", os.O_CREATE|os.O_WRONLY, 0666)
+	file, err := os.OpenFile("main.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err == nil {
 		log.Out = file
 	} else {
@@ -97,10 +104,11 @@ func main() {
 	}
 
 	log.Info("Main file logging")
-	// log.WithFields(logrus.Fields{
-	// 	"animal": "tiger",
-	// 	"size":   10,
-	// }).Info("A group of walrus emerges from the ocean")
+}
+
+func main() {
+	initLogger()
+	api.InitLogger()
 
 	// Create channel to control go routines
 	//
@@ -154,7 +162,6 @@ func binance(done chan struct{}) {
 	binanceClient := api.NewBinanceClient()
 
 	// Get account information
-	fmt.Println("Binance Account Info")
 	account := binanceClient.GetAccountInfo()
 	if !account.CanTrade {
 		log.Warn("Can't Trade!!")
@@ -173,17 +180,19 @@ func binance(done chan struct{}) {
 		info := binanceClient.GetBinanceExchangeInfo()
 		t.UpdateLimits(info)
 
-		// Buy BTC
-		if t.CanBuyBTC() {
-			t.Buyer.TryBTCBuy(binanceClient)
+		// // Buy BTC (currently inverting for testing)
+		// // TODO, need API call info to be updated even when not buying
+		// // or else BNB loop wants to buy infinite BNB
+		// if !t.CanBuyBTC() {
+		// 	t.TryBTCBuy(binanceClient)
 
-		}
+		// }
 
 		if t.MinBalance() < t.BtcBalance() {
 			// Buy BNB
-			if t.BnbBalance() < bnbBalanceTarget {
-				t.Buyer.TryBNBBuy(binanceClient)
-			}
+			// if t.BnbBalance() < bnbBalanceTarget {
+			//  t.TryBNBBuy(binanceClient)
+			// }
 			//Sell BTC
 			t.TryBTCSell(binanceClient)
 		}

@@ -1763,3 +1763,280 @@ time="2018-09-26T11:48:38-04:00" level=debug msg="BTC Sell info" btcBasePrice=64
 time="2018-09-26T11:48:41-04:00" level=debug msg="BTC Sell info" btcBasePrice=6495.07 btcLastPrice=6555.71 btcprice=6542.78
 time="2018-09-26T11:48:48-04:00" level=debug msg="strconv.ParseFloat: parsing \"\": invalid syntax"
 time="2018-09-26T11:48:48-04:00" level=debug msg="BTC Sell info" btcBasePrice=6495.07 btcLastPrice=6555.71 btcprice=0
+time="2018-10-02T21:47:28-04:00" level=debug msg="Trader created"
+time="2018-10-02T21:47:30-04:00" level=debug msg="Limits Updated"
+time="2018-10-02T21:47:31-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=0 btcprice=6515.48
+time="2018-10-02T21:47:32-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.48 btcprice=6517
+time="2018-10-02T21:47:32-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.48 btcprice=6517
+time="2018-10-02T21:47:34-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.48 btcprice=6517
+time="2018-10-02T21:47:35-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.48 btcprice=6517
+time="2018-10-02T21:47:35-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.48 btcprice=6517
+time="2018-10-02T21:47:36-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.48 btcprice=6517
+time="2018-10-02T21:47:37-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.48 btcprice=6517
+time="2018-10-02T21:47:38-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.48 btcprice=6517
+time="2018-10-02T21:47:39-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.48 btcprice=6515.11
+time="2018-10-02T21:47:40-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6515.11
+time="2018-10-02T21:47:41-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6515.11
+time="2018-10-02T21:47:41-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6515.11
+time="2018-10-02T21:47:42-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6515.11
+time="2018-10-02T21:47:43-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6515.11
+time="2018-10-02T21:47:43-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6515.11
+time="2018-10-02T21:47:44-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6515.53
+time="2018-10-02T21:47:45-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6517 btcprice=6515.53
+time="2018-10-02T21:47:48-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6515.43
+time="2018-10-02T21:47:49-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0 bnbprice=0.0015786
+time="2018-10-02T21:47:49-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6517 btcprice=6515.43
+time="2018-10-02T21:47:53-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6515.12
+time="2018-10-02T21:47:53-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015786 bnbprice=0.0015786
+time="2018-10-02T21:47:53-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6517 btcprice=6515.12
+time="2018-10-02T21:47:57-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6518.01
+time="2018-10-02T21:47:58-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015786 bnbprice=0.0015758
+time="2018-10-02T21:47:58-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6517 btcprice=6516.04
+time="2018-10-02T21:48:01-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6516.06
+time="2018-10-02T21:48:02-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015758 bnbprice=0.0015759
+time="2018-10-02T21:48:02-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6517 btcprice=6516.06
+time="2018-10-02T21:48:06-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6516.06
+time="2018-10-02T21:48:07-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015758 bnbprice=0.0015757
+time="2018-10-02T21:48:07-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6517 btcprice=6516.06
+time="2018-10-02T21:48:10-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6520.19
+time="2018-10-02T21:48:11-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6520.19
+time="2018-10-02T21:48:13-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6520.19
+time="2018-10-02T21:48:14-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015757 bnbprice=0.0015757
+time="2018-10-02T21:48:14-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6520.19 btcprice=6520.12
+time="2018-10-02T21:48:17-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6520.12
+time="2018-10-02T21:48:17-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015757 bnbprice=0.0015772
+time="2018-10-02T21:48:17-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6520.19 btcprice=6520.12
+time="2018-10-02T21:48:20-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6520.12
+time="2018-10-02T21:48:21-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015757 bnbprice=0.001577
+time="2018-10-02T21:48:21-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6520.19 btcprice=6520.12
+time="2018-10-02T21:48:25-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6519.59
+time="2018-10-02T21:48:27-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6520.19
+time="2018-10-02T21:48:30-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6519.59
+time="2018-10-02T21:48:30-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015757 bnbprice=0.0015757
+time="2018-10-02T21:48:30-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6520.19 btcprice=6519.59
+time="2018-10-02T21:48:34-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6520.01
+time="2018-10-02T21:48:35-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015757 bnbprice=0.0015757
+time="2018-10-02T21:48:35-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6520.19 btcprice=6520.01
+time="2018-10-02T21:48:38-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6519.6
+time="2018-10-02T21:48:39-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015757 bnbprice=0.0015782
+time="2018-10-02T21:48:39-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6520.19 btcprice=6519.6
+time="2018-10-02T21:48:42-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6519.6
+time="2018-10-02T21:48:43-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015757 bnbprice=0.001575
+time="2018-10-02T21:48:43-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6520.19 btcprice=6519.6
+time="2018-10-02T21:48:47-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6519.61
+time="2018-10-02T21:48:48-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6520.18
+time="2018-10-02T21:48:50-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6520.19
+time="2018-10-02T21:48:51-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6520.2
+time="2018-10-02T21:48:53-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6520.2
+time="2018-10-02T21:48:54-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6520.2
+time="2018-10-02T21:48:56-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6520.2
+time="2018-10-02T21:48:57-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6520.2
+time="2018-10-02T21:48:57-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.001575 bnbprice=0.0015791
+time="2018-10-02T21:48:57-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6520.2 btcprice=6520
+time="2018-10-02T21:49:01-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6519.63
+time="2018-10-02T21:49:03-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.001575 bnbprice=0.0015789
+time="2018-10-02T21:49:03-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6520.2 btcprice=6519.63
+time="2018-10-02T21:49:06-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6519.67
+time="2018-10-02T21:49:07-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.001575 bnbprice=0.0015787
+time="2018-10-02T21:49:07-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6520.2 btcprice=6519.7
+time="2018-10-02T21:49:10-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6519.99
+time="2018-10-02T21:49:11-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.001575 bnbprice=0.0015748
+time="2018-10-02T21:49:11-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6520.2 btcprice=6519.99
+time="2018-10-02T21:49:15-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6519.99
+time="2018-10-02T21:49:16-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015768
+time="2018-10-02T21:49:16-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6520.2 btcprice=6519.99
+time="2018-10-02T21:49:19-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6519.69
+time="2018-10-02T21:49:20-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015775
+time="2018-10-02T21:49:20-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6520.2 btcprice=6519.69
+time="2018-10-02T21:49:24-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6519.6
+time="2018-10-02T21:49:25-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015775
+time="2018-10-02T21:49:25-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6520.2 btcprice=6519.99
+time="2018-10-02T21:49:28-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6519.6
+time="2018-10-02T21:49:29-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015782
+time="2018-10-02T21:49:29-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6520.2 btcprice=6519.61
+time="2018-10-02T21:49:33-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6519.6
+time="2018-10-02T21:49:34-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015775
+time="2018-10-02T21:49:34-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6520.2 btcprice=6519.61
+time="2018-10-02T21:49:37-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6519.62
+time="2018-10-02T21:49:38-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015773
+time="2018-10-02T21:49:38-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6520.2 btcprice=6519.61
+time="2018-10-02T21:49:42-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6519.61
+time="2018-10-02T21:49:43-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015783
+time="2018-10-02T21:49:43-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6520.2 btcprice=6519.62
+time="2018-10-02T21:49:46-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6519.62
+time="2018-10-02T21:49:47-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015783
+time="2018-10-02T21:49:47-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6520.2 btcprice=6519.62
+time="2018-10-02T21:49:51-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6519.63
+time="2018-10-02T21:49:52-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015784
+time="2018-10-02T21:49:52-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6520.2 btcprice=6519.63
+time="2018-10-02T21:49:55-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6519.6
+time="2018-10-02T21:49:56-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015766
+time="2018-10-02T21:49:56-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6520.2 btcprice=6519.6
+time="2018-10-02T21:49:59-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6519.59
+time="2018-10-02T21:50:00-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015766
+time="2018-10-02T21:50:00-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6520.2 btcprice=6519.59
+time="2018-10-02T21:50:03-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6519.63
+time="2018-10-02T21:50:04-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015782
+time="2018-10-02T21:50:04-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6520.2 btcprice=6519.63
+time="2018-10-02T21:50:08-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6519.65
+time="2018-10-02T21:50:09-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015782
+time="2018-10-02T21:50:09-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6520.2 btcprice=6519.65
+time="2018-10-02T21:50:12-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6519.65
+time="2018-10-02T21:50:13-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015782
+time="2018-10-02T21:50:13-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6520.2 btcprice=6519.66
+time="2018-10-02T21:50:16-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6521
+time="2018-10-02T21:50:17-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6520.44
+time="2018-10-02T21:50:18-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015782
+time="2018-10-02T21:50:18-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6521 btcprice=6520.44
+time="2018-10-02T21:50:21-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6520.71
+time="2018-10-02T21:50:22-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015766
+time="2018-10-02T21:50:22-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6521 btcprice=6520.71
+time="2018-10-02T21:50:25-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6521
+time="2018-10-02T21:50:27-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6521.84
+time="2018-10-02T21:50:28-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6524.99
+time="2018-10-02T21:50:29-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015781
+time="2018-10-02T21:50:29-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6525 btcprice=6524.99
+time="2018-10-02T21:50:31-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6520.17
+time="2018-10-02T21:50:33-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015781
+time="2018-10-02T21:50:33-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6525 btcprice=6524.99
+time="2018-10-02T21:50:36-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6524.99
+time="2018-10-02T21:50:37-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015781
+time="2018-10-02T21:50:37-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6525 btcprice=6524.99
+time="2018-10-02T21:50:41-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6521.74
+time="2018-10-02T21:50:42-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015781
+time="2018-10-02T21:50:42-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6525 btcprice=6521.74
+time="2018-10-02T21:50:45-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6521.76
+time="2018-10-02T21:50:46-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015781
+time="2018-10-02T21:50:46-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6525 btcprice=6521.76
+time="2018-10-02T21:50:49-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6524.97
+time="2018-10-02T21:50:50-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015783
+time="2018-10-02T21:50:50-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6525 btcprice=6524.97
+time="2018-10-02T21:50:55-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6522.03
+time="2018-10-02T21:50:56-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015771
+time="2018-10-02T21:50:56-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6525 btcprice=6522.03
+time="2018-10-02T21:50:59-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6522.07
+time="2018-10-02T21:51:00-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015771
+time="2018-10-02T21:51:00-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6525 btcprice=6522.07
+time="2018-10-02T21:51:04-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6522.01
+time="2018-10-02T21:51:05-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015771
+time="2018-10-02T21:51:05-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6525 btcprice=6522.01
+time="2018-10-02T21:51:09-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6522.01
+time="2018-10-02T21:51:09-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015773
+time="2018-10-02T21:51:09-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6525 btcprice=6522
+time="2018-10-02T21:51:13-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6522.01
+time="2018-10-02T21:51:14-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015779
+time="2018-10-02T21:51:14-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6525 btcprice=6522.07
+time="2018-10-02T21:51:18-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6522.15
+time="2018-10-02T21:51:19-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015776
+time="2018-10-02T21:51:19-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6525 btcprice=6522.15
+time="2018-10-02T21:51:23-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6522.18
+time="2018-10-02T21:51:24-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015783
+time="2018-10-02T21:51:24-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6525 btcprice=6522.18
+time="2018-10-02T21:51:27-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6522.2
+time="2018-10-02T21:51:28-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015778
+time="2018-10-02T21:51:28-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6525 btcprice=6522.2
+time="2018-10-02T21:51:32-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6522.23
+time="2018-10-02T21:51:32-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015788
+time="2018-10-02T21:51:32-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6525 btcprice=6522.23
+time="2018-10-02T21:51:35-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6522.24
+time="2018-10-02T21:51:36-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015778
+time="2018-10-02T21:51:36-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6525 btcprice=6522.24
+time="2018-10-02T21:51:41-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6522.24
+time="2018-10-02T21:51:42-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015765
+time="2018-10-02T21:51:42-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6525 btcprice=6522.26
+time="2018-10-02T21:51:45-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6522.18
+time="2018-10-02T21:51:46-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015784
+time="2018-10-02T21:51:46-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6525 btcprice=6522.18
+time="2018-10-02T21:51:50-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6522.21
+time="2018-10-02T21:51:51-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015769
+time="2018-10-02T21:51:51-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6525 btcprice=6522.21
+time="2018-10-02T21:51:54-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6524.59
+time="2018-10-02T21:51:55-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015789
+time="2018-10-02T21:51:55-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6525 btcprice=6522.21
+time="2018-10-02T21:52:00-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6524.52
+time="2018-10-02T21:52:02-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015775
+time="2018-10-02T21:52:02-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6525 btcprice=6524.52
+time="2018-10-02T21:52:06-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6521.1
+time="2018-10-02T21:52:07-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015775
+time="2018-10-02T21:52:07-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6525 btcprice=6521.1
+time="2018-10-02T21:52:10-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6521.11
+time="2018-10-02T21:52:11-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015777
+time="2018-10-02T21:52:11-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6525 btcprice=6521.11
+time="2018-10-02T21:52:15-04:00" level=debug msg="BTC Buy info" btcBasePrice=6515.48 btcLastPrice=6515.11 btcprice=6521
+time="2018-10-02T21:52:15-04:00" level=debug msg="BNB Buy info" bnbBasePrice=0.0015754 bnbLastPrice=0.0015748 bnbprice=0.0015779
+time="2018-10-02T21:52:15-04:00" level=debug msg="BTC Sell info" btcBasePrice=6517 btcLastPrice=6525 btcprice=6521
+time="2018-10-02T21:53:27-04:00" level=debug msg="Trader created"
+time="2018-10-02T21:53:28-04:00" level=debug msg="Limits Updated"
+time="2018-10-02T21:53:41-04:00" level=debug msg="***BTC Buy conditions met***" btcBasePrice=6523.72 btcLastPrice=6521.89 btcPrice=6522.06 diff=0.00025445604655010553 quantity=0.0007666289485223993
+time="2018-10-02T21:53:41-04:00" level=info msg="Order from Heap"
+time="2018-10-02T21:53:41-04:00" level=debug msg="BTC Sell info" btcprice=6522.06 order price=6522.06
+time="2018-10-02T21:53:45-04:00" level=info msg="Order from Heap"
+time="2018-10-02T21:53:45-04:00" level=debug msg="BTC Sell info" btcprice=6521.69 order price=6522.06
+time="2018-10-02T21:54:00-04:00" level=debug msg="***BTC Buy conditions met***" btcBasePrice=6521.89 btcLastPrice=6520.06 btcPrice=6520.1 diff=0.0002744603174846499 quantity=0.0007668594039968712
+time="2018-10-02T21:54:01-04:00" level=info msg="Order from Heap"
+time="2018-10-02T21:54:01-04:00" level=debug msg="BTC Sell info" btcprice=6520.1 order price=6520.1
+time="2018-10-02T21:54:04-04:00" level=info msg="Order from Heap"
+time="2018-10-02T21:54:04-04:00" level=debug msg="BTC Sell info" btcprice=6523.46 order price=6520.1
+time="2018-10-02T21:54:08-04:00" level=info msg="Order from Heap"
+time="2018-10-02T21:54:08-04:00" level=debug msg="BTC Sell info" btcprice=6520.16 order price=6520.1
+time="2018-10-02T21:54:12-04:00" level=info msg="Order from Heap"
+time="2018-10-02T21:54:12-04:00" level=debug msg="BTC Sell info" btcprice=6523.44 order price=6520.1
+time="2018-10-02T21:54:16-04:00" level=info msg="Order from Heap"
+time="2018-10-02T21:54:16-04:00" level=debug msg="BTC Sell info" btcprice=6520.25 order price=6520.1
+time="2018-10-02T21:54:19-04:00" level=info msg="Order from Heap"
+time="2018-10-02T21:54:19-04:00" level=debug msg="BTC Sell info" btcprice=6522 order price=6520.1
+time="2018-10-02T21:54:23-04:00" level=info msg="Order from Heap"
+time="2018-10-02T21:54:23-04:00" level=debug msg="BTC Sell info" btcprice=6522 order price=6520.1
+time="2018-10-02T21:54:26-04:00" level=info msg="Order from Heap"
+time="2018-10-02T21:54:26-04:00" level=debug msg="BTC Sell info" btcprice=6520.25 order price=6520.1
+time="2018-10-02T21:54:30-04:00" level=debug msg="***BNB Buy conditions met***" bnbBasePrice=0.0015786 bnbLastPrice=0.0015764 bnbprice=0.0015768 btcLastPrice=6520.06 buyBalanceLimit=5 diff=0.0011402508551882377 quantity=0.4863420272783469
+time="2018-10-02T21:54:30-04:00" level=info msg="Order from Heap"
+time="2018-10-02T21:54:30-04:00" level=debug msg="BTC Sell info" btcprice=6520.26 order price=6520.1
+time="2018-10-02T21:54:33-04:00" level=info msg="Order from Heap"
+time="2018-10-02T21:54:33-04:00" level=debug msg="BTC Sell info" btcprice=6520.27 order price=6520.1
+time="2018-10-02T21:54:38-04:00" level=info msg="Order from Heap"
+time="2018-10-02T21:54:38-04:00" level=debug msg="BTC Sell info" btcprice=6521.31 order price=6520.1
+time="2018-10-02T21:54:44-04:00" level=info msg="Order from Heap"
+time="2018-10-02T21:54:44-04:00" level=debug msg="BTC Sell info" btcprice=6522.67 order price=6520.1
+time="2018-10-02T21:54:48-04:00" level=info msg="Order from Heap"
+time="2018-10-02T21:54:48-04:00" level=debug msg="BTC Sell info" btcprice=6522.67 order price=6520.1
+time="2018-10-02T21:54:51-04:00" level=info msg="Order from Heap"
+time="2018-10-02T21:54:51-04:00" level=debug msg="BTC Sell info" btcprice=6522.71 order price=6520.1
+time="2018-10-02T21:54:55-04:00" level=info msg="Order from Heap"
+time="2018-10-02T21:54:55-04:00" level=debug msg="BTC Sell info" btcprice=6522.8 order price=6520.1
+time="2018-10-02T21:55:00-04:00" level=info msg="Order from Heap"
+time="2018-10-02T21:55:00-04:00" level=debug msg="BTC Sell info" btcprice=6522.8 order price=6520.1
+time="2018-10-02T21:56:28-04:00" level=debug msg="Trader created"
+time="2018-10-02T21:56:28-04:00" level=debug msg="Limits Updated"
+time="2018-10-02T21:56:34-04:00" level=debug msg="***BTC Buy conditions met***" btcBasePrice=6522.77 btcLastPrice=6520.62 btcPrice=6520.65 diff=0.0003250152925828751 quantity=0.000766794721385138
+time="2018-10-02T21:56:36-04:00" level=info msg="Order from Heap"
+time="2018-10-02T21:56:36-04:00" level=debug msg="BTC Sell info" btcprice=6520.58 order price=6520.62
+time="2018-10-02T22:04:21-04:00" level=debug msg="Trader created"
+time="2018-10-02T22:04:23-04:00" level=debug msg="Limits Updated"
+time="2018-10-02T22:04:54-04:00" level=debug msg="***BNB Buy conditions met***" bnbBasePrice=0.0015887 bnbLastPrice=0.0015844 bnbprice=0.0015846 btcLastPrice=6515.34 buyBalanceLimit=5 diff=0.0025807263800591285 quantity=0.4842986613883103
+time="2018-10-02T22:05:17-04:00" level=debug msg="***BTC Buy conditions met***" btcBasePrice=6515.63 btcLastPrice=6510.77 btcPrice=6512.15 diff=0.0005341003095633842 quantity=0.0007677955821042207
+time="2018-10-02T22:05:19-04:00" level=info msg="Order from Heap"
+time="2018-10-02T22:05:19-04:00" level=debug msg="BTC Sell info" btcprice=6512.15 order price=6510.77
+time="2018-10-02T22:05:22-04:00" level=info msg="Order from Heap"
+time="2018-10-02T22:05:22-04:00" level=debug msg="BTC Sell info" btcprice=6510.79 order price=6510.77
+time="2018-10-02T22:05:27-04:00" level=info msg="Order from Heap"
+time="2018-10-02T22:05:27-04:00" level=debug msg="BTC Sell info" btcprice=6510.02 order price=6510.77
+time="2018-10-02T22:05:35-04:00" level=debug msg="***BTC Buy conditions met***" btcBasePrice=6510.77 btcLastPrice=6501.83 btcPrice=6501.84 diff=0.00137157356195969 quantity=0.000769013079374454
+time="2018-10-02T22:05:36-04:00" level=info msg="Order from Heap"
+time="2018-10-02T22:05:36-04:00" level=debug msg="BTC Sell info" btcprice=6502.39 order price=6501.83
+time="2018-10-02T22:05:40-04:00" level=info msg="Order from Heap"
+time="2018-10-02T22:05:40-04:00" level=debug msg="BTC Sell info" btcprice=6505.42 order price=6501.83
+time="2018-10-02T22:05:45-04:00" level=info msg="Order from Heap"
+time="2018-10-02T22:05:45-04:00" level=debug msg="BTC Sell info" btcprice=6504.29 order price=6501.83
+time="2018-10-02T22:05:50-04:00" level=info msg="Order from Heap"
+time="2018-10-02T22:05:50-04:00" level=debug msg="BTC Sell info" btcprice=6504.29 order price=6501.83
+time="2018-10-02T22:05:54-04:00" level=info msg="Order from Heap"
+time="2018-10-02T22:05:54-04:00" level=debug msg="BTC Sell info" btcprice=6504.25 order price=6501.83
+time="2018-10-02T22:05:58-04:00" level=info msg="Order from Heap"
+time="2018-10-02T22:05:58-04:00" level=debug msg="BTC Sell info" btcprice=6501.53 order price=6501.83
+time="2018-10-02T22:06:04-04:00" level=debug msg="***BTC Buy conditions met***" btcBasePrice=6501.83 btcLastPrice=6501 btcPrice=6501.01 diff=0.00012611833899067016 quantity=0.0007691112611732638
+time="2018-10-02T22:06:05-04:00" level=info msg="Order from Heap"
+time="2018-10-02T22:06:05-04:00" level=debug msg="BTC Sell info" btcprice=6501.01 order price=6501
+time="2018-10-02T22:06:10-04:00" level=info msg="Order from Heap"
+time="2018-10-02T22:06:10-04:00" level=debug msg="BTC Sell info" btcprice=6500.62 order price=6501
+time="2018-10-02T22:06:15-04:00" level=debug msg="***BNB Buy conditions met***" bnbBasePrice=0.0015844 bnbLastPrice=0.0015776 bnbprice=0.0015815 btcLastPrice=6500.97 buyBalanceLimit=5 diff=0.0018303458722544231 quantity=0.4863205775905391

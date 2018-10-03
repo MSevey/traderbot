@@ -2,6 +2,8 @@ package trader
 
 import (
 	"container/heap"
+	"errors"
+	"fmt"
 	"os"
 	"strconv"
 	"sync"
@@ -18,6 +20,11 @@ const (
 	diffLimit       = 0.0001 // .01% to start
 )
 
+var (
+	errBasePriceNotSet = errors.New("base price not set")
+	errUpdateLastPrice = errors.New("updating last price")
+)
+
 // Trader is the struct to control some of the functionality
 type Trader struct {
 	buyAmount     float64 // amount of BTC to buy at a time, set to 0.001 for now (~$6.60 as of 7/6/18)
@@ -26,6 +33,15 @@ type Trader struct {
 	buyLimit      bool    // Has the buy limit been reached
 	lastHighPoint float64 // The last price high point to compare against
 	numOrders     int     // Number of current active orders
+
+	// counters to help with refining buy and sell algos so they are making the
+	// most and not executing too quickly
+	//
+	// TODO - will need to tie these into a method that adjust the difference
+	// target
+	numberOfBTCBuys  int
+	numberOfBNBBuys  int
+	numberOfBTCSells int
 
 	btcBalance  float64
 	bnbBalance  float64
@@ -173,11 +189,6 @@ func (t *Trader) TryBNBBuy(c *api.Client) {
 		t.Buyer.bnbBasePrice = bnbprice
 		return
 	}
-	t.log.WithFields(logrus.Fields{
-		"bnbBasePrice": t.Buyer.bnbBasePrice,
-		"bnbLastPrice": t.Buyer.bnbLastPrice,
-		"bnbprice":     bnbprice,
-	}).Debug("BNB Buy info")
 	// Compare to previous price
 	if bnbprice <= t.Buyer.bnbLastPrice || t.Buyer.bnbLastPrice == 0 {
 		t.Buyer.bnbLastPrice = bnbprice
@@ -204,39 +215,21 @@ func (t *Trader) TryBNBBuy(c *api.Client) {
 		"btcLastPrice":    t.Buyer.btcLastPrice,
 	}).Debug("***BNB Buy conditions met***")
 
+	t.numberOfBNBBuys++
+	fmt.Println("Number of BNB Buys", t.numberOfBNBBuys)
+
 	// Update Base Price
 	t.Buyer.bnbBasePrice = t.Buyer.bnbLastPrice
 }
 
 // TryBTCBuy tries to buy btc
-func (t *Trader) TryBTCBuy(c *api.Client) {
+func (t *Trader) TryBTCBuy(c *api.Client, btcPrice float64, btcSymbol string) {
 	t.mu.Lock()
 	defer t.mu.Unlock()
 	t.Buyer.mu.Lock()
 	defer t.Buyer.mu.Unlock()
 
-	// Check price of BTCUSDT
-	btcpriceStr := c.GetCoinPrice(api.BTCUSDT)
-	btcprice, err := strconv.ParseFloat(btcpriceStr.Price, 64)
-	t.check(err)
-
-	// Check to make sure base price is set
-	if t.Buyer.btcBasePrice == 0 {
-		t.Buyer.btcBasePrice = btcprice
-		return
-	}
-	t.log.WithFields(logrus.Fields{
-		"btcBasePrice": t.Buyer.btcBasePrice,
-		"btcLastPrice": t.Buyer.btcLastPrice,
-		"btcprice":     btcprice,
-	}).Debug("BTC Buy info")
-	// Compare to previous price
-	if btcprice <= t.Buyer.btcLastPrice || t.Buyer.btcLastPrice == 0 {
-		t.Buyer.btcLastPrice = btcprice
-		return
-	}
-
-	diff := (t.Buyer.btcBasePrice - btcprice) / t.Buyer.btcBasePrice
+	diff := (t.Buyer.btcBasePrice - btcPrice) / t.Buyer.btcBasePrice
 	if diff < diffLimit {
 		return
 	}
@@ -245,19 +238,23 @@ func (t *Trader) TryBTCBuy(c *api.Client) {
 	// TODO
 	//  - change to api order
 	//  - how to confirm order went through??
-	quantity := buyBalanceLimit / btcprice
+	//  - should by at t.Buyer.btcLastPrice not btcPrice
+	quantity := buyBalanceLimit / btcPrice
 	t.log.WithFields(logrus.Fields{
 		"btcBasePrice": t.Buyer.btcBasePrice,
 		"btcLastPrice": t.Buyer.btcLastPrice,
-		"btcprice":     btcprice,
+		"btcPrice":     btcPrice,
 		"diff":         diff,
 		"quantity":     quantity,
 	}).Debug("***BTC Buy conditions met***")
 
+	t.numberOfBTCBuys++
+	fmt.Println("Number of BTC Buys", t.numberOfBTCBuys)
+
 	// Add to Heap
 	order := &order{
-		symbol:   btcpriceStr.Symbol,
-		price:    btcprice,
+		symbol:   btcSymbol,
+		price:    t.Buyer.btcLastPrice,
 		quantity: quantity,
 	}
 	heap.Push(&t.Buyer.orders, order)
@@ -268,7 +265,7 @@ func (t *Trader) TryBTCBuy(c *api.Client) {
 }
 
 // TryBTCSell tries to buy btc
-func (t *Trader) TryBTCSell(c *api.Client) {
+func (t *Trader) TryBTCSell(c *api.Client, btcprice float64) {
 	t.mu.Lock()
 	defer t.mu.Unlock()
 	t.Seller.mu.Lock()
@@ -276,11 +273,6 @@ func (t *Trader) TryBTCSell(c *api.Client) {
 	// BTC Selling
 	// Prioritize selling against previous buy orders, if not orders in heap, track against base and last price
 	//
-
-	// Check price of BTCUSDT
-	btcpriceStr := c.GetCoinPrice(api.BTCUSDT)
-	btcprice, err := strconv.ParseFloat(btcpriceStr.Price, 64)
-	t.check(err)
 
 	// Pop lowest buy order off heap, set price to base price
 	t.Buyer.mu.Lock()
@@ -310,6 +302,7 @@ func (t *Trader) TryBTCSell(c *api.Client) {
 		// TODO
 		//  - change to api order
 		//  - how to confirm order went through??
+		//  - should sell at t.Seller.btcLastPrice not btcprice
 		t.log.WithFields(logrus.Fields{
 			"btcBasePrice": t.Seller.btcBasePrice,
 			"btcLastPrice": t.Seller.btcLastPrice,
@@ -318,27 +311,14 @@ func (t *Trader) TryBTCSell(c *api.Client) {
 			"quantity":     order.quantity,
 		}).Debug("***BTC Sell conditions met***")
 
+		t.numberOfBTCSells++
+		fmt.Println("Number of BTC Sells", t.numberOfBTCSells)
+
 		// if no sell push order back onto heap
 		if false {
 			heap.Push(&t.Buyer.orders, order)
 			t.Buyer.orders.update(order, order.symbol, order.price, order.quantity)
 		}
-		return
-	}
-	t.log.WithFields(logrus.Fields{
-		"btcBasePrice": t.Seller.btcBasePrice,
-		"btcLastPrice": t.Seller.btcLastPrice,
-		"btcprice":     btcprice,
-	}).Debug("BTC Sell info")
-
-	// Check to make sure base price is set
-	if t.Seller.btcBasePrice == 0 {
-		t.Seller.btcBasePrice = btcprice
-		return
-	}
-	// Compare to previous price
-	if btcprice >= t.Seller.btcLastPrice {
-		t.Seller.btcLastPrice = btcprice
 		return
 	}
 
@@ -360,6 +340,8 @@ func (t *Trader) TryBTCSell(c *api.Client) {
 		"diff":         diff,
 		"quantity":     quantity,
 	}).Debug("***BTC Sell conditions met***")
+	t.numberOfBTCSells++
+	fmt.Println("Number of BTC Sells", t.numberOfBTCSells)
 
 	// Reset base price
 	t.Seller.btcBasePrice = t.Seller.btcLastPrice
@@ -417,6 +399,58 @@ func (t *Trader) UpdateLimits(info api.ExchangeInfo) {
 		t.Limits = info.BNBLimits
 		t.log.Debug("Limits Updated")
 	}
+}
+
+// UpdateBTCBuyerPrices updates the base and last price of the Buyer
+func (t *Trader) UpdateBTCBuyerPrices(c *api.Client) (float64, string, error) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	t.Buyer.mu.Lock()
+	defer t.Buyer.mu.Unlock()
+
+	// Check price of BTCUSDT
+	btcpriceStr := c.GetCoinPrice(api.BTCUSDT)
+	btcprice, err := strconv.ParseFloat(btcpriceStr.Price, 64)
+	t.check(err)
+
+	// Check to make sure base price is set
+	if t.Buyer.btcBasePrice == 0 {
+		t.Buyer.btcBasePrice = btcprice
+		return btcprice, btcpriceStr.Symbol, errBasePriceNotSet
+	}
+	// Compare to previous price
+	if btcprice <= t.Buyer.btcLastPrice || t.Buyer.btcLastPrice == 0 {
+		t.Buyer.btcLastPrice = btcprice
+		return btcprice, btcpriceStr.Symbol, errUpdateLastPrice
+	}
+
+	return btcprice, btcpriceStr.Symbol, nil
+}
+
+// UpdateBTCSellerPrices updates the base and last price of the Seller
+func (t *Trader) UpdateBTCSellerPrices(c *api.Client) (float64, error) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	t.Seller.mu.Lock()
+	defer t.Seller.mu.Unlock()
+
+	// Check price of BTCUSDT
+	btcpriceStr := c.GetCoinPrice(api.BTCUSDT)
+	btcprice, err := strconv.ParseFloat(btcpriceStr.Price, 64)
+	t.check(err)
+
+	// Check to make sure base price is set
+	if t.Seller.btcBasePrice == 0 {
+		t.Seller.btcBasePrice = btcprice
+		return btcprice, errBasePriceNotSet
+	}
+	// Compare to previous price
+	if btcprice >= t.Seller.btcLastPrice {
+		t.Seller.btcLastPrice = btcprice
+		return btcprice, errUpdateLastPrice
+	}
+
+	return btcprice, nil
 }
 
 // BtcBalance returns the btcBalance of the trader

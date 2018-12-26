@@ -9,7 +9,6 @@ go:
 install:
   - make dependencies
   - make fmt
-  - make vet
   - make lint
 
 branches:

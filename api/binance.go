@@ -16,12 +16,6 @@ import (
 	"time"
 )
 
-// TODO
-//
-// 1) add weight as a return value from calls to then increment trader details
-//
-// 2) Look at different order types to help optimize trading algo
-
 const (
 	// recvWindow is the allowable difference between the submitted timestamp
 	// and the servertime that an API call will be accepted

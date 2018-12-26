@@ -173,31 +173,36 @@ func NewTrader() *Trader {
 }
 
 // TryBNBBuy tries to buy bnb
-func (t *Trader) TryBNBBuy(c *api.Client) {
+func (t *Trader) TryBNBBuy(c *api.Client) error {
 	t.mu.Lock()
 	defer t.mu.Unlock()
 	t.Buyer.mu.Lock()
 	defer t.Buyer.mu.Unlock()
 
 	// Check price of BNBBTC
-	bnbpriceStr := c.GetCoinPrice(api.BNBBTC)
+	bnbpriceStr, err := c.GetCoinPrice(api.BNBBTC)
+	if err != nil {
+		return err
+	}
 	bnbprice, err := strconv.ParseFloat(bnbpriceStr.Price, 64)
-	t.check(err)
+	if err != nil {
+		return err
+	}
 
 	// Check to make sure base price is set
 	if t.Buyer.bnbBasePrice == 0 {
 		t.Buyer.bnbBasePrice = bnbprice
-		return
+		return nil
 	}
 	// Compare to previous price
 	if bnbprice <= t.Buyer.bnbLastPrice || t.Buyer.bnbLastPrice == 0 {
 		t.Buyer.bnbLastPrice = bnbprice
-		return
+		return nil
 	}
 
 	diff := (t.Buyer.bnbBasePrice - bnbprice) / t.Buyer.bnbBasePrice
 	if diff < diffLimit {
-		return
+		return nil
 	}
 
 	// Buy at last price
@@ -220,6 +225,7 @@ func (t *Trader) TryBNBBuy(c *api.Client) {
 
 	// Update Base Price
 	t.Buyer.bnbBasePrice = t.Buyer.bnbLastPrice
+	return nil
 }
 
 // TryBTCBuy tries to buy btc
@@ -409,9 +415,14 @@ func (t *Trader) UpdateBTCBuyerPrices(c *api.Client) (float64, string, error) {
 	defer t.Buyer.mu.Unlock()
 
 	// Check price of BTCUSDT
-	btcpriceStr := c.GetCoinPrice(api.BTCUSDT)
+	btcpriceStr, err := c.GetCoinPrice(api.BTCUSDT)
+	if err != nil {
+		return 0, "", err
+	}
 	btcprice, err := strconv.ParseFloat(btcpriceStr.Price, 64)
-	t.check(err)
+	if err != nil {
+		return 0, "", err
+	}
 
 	// Check to make sure base price is set
 	if t.Buyer.btcBasePrice == 0 {
@@ -435,9 +446,14 @@ func (t *Trader) UpdateBTCSellerPrices(c *api.Client) (float64, error) {
 	defer t.Seller.mu.Unlock()
 
 	// Check price of BTCUSDT
-	btcpriceStr := c.GetCoinPrice(api.BTCUSDT)
+	btcpriceStr, err := c.GetCoinPrice(api.BTCUSDT)
+	if err != nil {
+		return 0, err
+	}
 	btcprice, err := strconv.ParseFloat(btcpriceStr.Price, 64)
-	t.check(err)
+	if err != nil {
+		return 0, err
+	}
 
 	// Check to make sure base price is set
 	if t.Seller.btcBasePrice == 0 {

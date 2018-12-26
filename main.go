@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/MSevey/traderBot/api"
+	"github.com/MSevey/traderBot/metrics"
 	"github.com/MSevey/traderBot/trader"
 	"github.com/sirupsen/logrus"
 )
@@ -28,6 +29,7 @@ import (
 // 1) Need to update error checking to be more uptime resilient.  Handling
 // errors better
 //      - ex, if account api fails the program panics because CanTrade is false by default
+//   **RUN FOR EXTENDED PERIOD OF TIME TO TEST RESILIENCY**
 //
 // 2) Buying Algorithm (need buying API calls to be working)
 //      - buy when price has gone down by 5% or more.  based on currentPrice
@@ -122,13 +124,18 @@ func main() {
 	// // Metrics goroutine
 	// fmt.Println("go metrics")
 	// go metrics.Test()
+	p, err := metrics.PortfolioBalance()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(p)
 
 	// // coinMarketCap API goroutine
 	// fmt.Println("go coin")
 	// go coinMarketCap(done)
 
 	// binance API goroutine
-	go binance(done)
+	// go binance(done)
 
 	// // Sending Email
 	// //
@@ -164,7 +171,11 @@ func binance(done chan struct{}) {
 	binanceClient := api.NewBinanceClient()
 
 	// Get account information
-	account := binanceClient.GetAccountInfo()
+	account, err := binanceClient.GetAccountInfo()
+	if err != nil {
+		log.Warn("Couldn't get account info")
+		return
+	}
 	if !account.CanTrade {
 		log.Warn("Can't Trade!!")
 	}
@@ -209,7 +220,11 @@ func binance(done chan struct{}) {
 		}
 
 		// Update Balances
-		account := binanceClient.GetAccountInfo()
+		account, err := binanceClient.GetAccountInfo()
+		if err != nil {
+			log.Warn(err)
+			continue
+		}
 		if !account.CanTrade {
 			log.Warn("can't trade, CanTrade is false")
 			continue

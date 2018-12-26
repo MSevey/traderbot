@@ -9,6 +9,17 @@ import (
 	"strings"
 )
 
+// the mail package is set up to send emails via gmail, currently linked to
+// mjsevey@gmail.com
+//
+// TODO
+//
+// 1) Need to expand methods based on metrics package to send summary emails
+// with custom text
+//
+// 2) Once running on virtual machine need to store environment variable on
+// virtual machine as well
+
 var (
 	gmailPassword = os.Getenv("gmailPassword")
 )
@@ -31,7 +42,7 @@ type SMTPServer struct {
 func SendEmail() {
 	mail := Mail{}
 	mail.senderID = "mjsevey@gmail.com"
-	mail.toIds = []string{"mjsevey@gmail.com", "matt@sia.tech"}
+	mail.toIds = []string{"mjsevey@gmail.com"}
 	mail.subject = "This is the email subject"
 	mail.body = "Harry Potter and threat to Israel\n\nGood editing!!"
 

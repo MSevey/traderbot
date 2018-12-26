@@ -242,19 +242,23 @@ func (c *Client) Get24hrStats(symbol string) Stats24hr {
 // GetAccountInfo calls the API endpoint that returns account info
 //
 // Weight = 5
-func (c *Client) GetAccountInfo() AccountInfo {
+func (c *Client) GetAccountInfo() (AccountInfo, error) {
 	timestamp := strconv.FormatInt(time.Now().UnixNano()/int64(time.Millisecond), 10)
 	params := fmt.Sprintf("timestamp=%v&recvWindow=%v", timestamp, recvWindow)
 	sig := signature(params)
 	query := fmt.Sprintf("?%v&signature=%v", params, sig)
 	body, err := c.GetSecureAPI(c.Address + BNBAccount + query)
-	check(err)
+	if err != nil {
+		return AccountInfo{}, err
+	}
 
 	// Get Account Info
 	account := AccountInfo{}
 	jsonErr := json.Unmarshal(body, &account)
-	check(jsonErr)
-	return account
+	if jsonErr != nil {
+		return AccountInfo{}, jsonErr
+	}
+	return account, nil
 }
 
 // GetAllOrders calls the endpoint that returns all order history fpr a given symbol
@@ -290,15 +294,19 @@ func (c *Client) GetBinanceExchangeInfo() ExchangeInfo {
 }
 
 // GetCoinPrice calls the API endpoint that returns the current price for a coin
-func (c *Client) GetCoinPrice(symbol string) TickerPrice {
+func (c *Client) GetCoinPrice(symbol string) (TickerPrice, error) {
 	body, err := c.GetAPI(c.Address + BNBPrice + "?symbol=" + symbol)
-	check(err)
+	if err != nil {
+		return TickerPrice{}, err
+	}
 
 	price := TickerPrice{}
-	jsonErr := json.Unmarshal(body, &price)
-	check(jsonErr)
+	err = json.Unmarshal(body, &price)
+	if err != nil {
+		return TickerPrice{}, err
+	}
 
-	return price
+	return price, nil
 }
 
 // GetOpenOrders calls the endpoint that returns all open orders

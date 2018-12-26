@@ -33,8 +33,8 @@ var (
 	// Price of 1 BNB in BTC
 	BNBBTC = "BNBBTC"
 
-	// BNBBTC is the binance symbol for the BNB/BTC market to get ticker price
-	// Price of 1 BNB in BTC
+	// BNBUSDT is the binance symbol for the BNB/USDT market to get ticker price
+	// Price of 1 BNB in USDT
 	BNBUSDT = "BNBUSDT"
 
 	// BTCUSDT is the binance symbol for the BTC/USDT market to get ticker price

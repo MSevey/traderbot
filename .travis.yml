@@ -1,0 +1,17 @@
+language: go
+
+os: 
+  - linux
+
+go:
+  - "1.10"
+
+install:
+  - make dependencies
+  - make fmt
+  - make lint
+
+branches:
+  only:
+    - master
+    - staging

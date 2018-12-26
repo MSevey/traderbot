@@ -11,14 +11,6 @@ import (
 
 // the mail package is set up to send emails via gmail, currently linked to
 // mjsevey@gmail.com
-//
-// TODO
-//
-// 1) Need to expand methods based on metrics package to send summary emails
-// with custom text
-//
-// 2) Once running on virtual machine need to store environment variable on
-// virtual machine as well
 
 var (
 	gmailPassword = os.Getenv("gmailPassword")

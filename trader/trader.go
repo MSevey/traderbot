@@ -1,5 +1,9 @@
 package trader
 
+// the trader package contains the code that makes decisions on buy and sell
+// orders. This package is where any trading related algorithmic information and
+// code should be kept and managed
+
 import (
 	"container/heap"
 	"errors"
@@ -15,17 +19,18 @@ import (
 
 const (
 	// trading criteria
-
 	buyBalanceLimit = 5      // buy $5 at a time
 	diffLimit       = 0.0001 // .01% to start
 )
 
 var (
+	// Common errors
 	errBasePriceNotSet = errors.New("base price not set")
 	errUpdateLastPrice = errors.New("updating last price")
 )
 
-// Trader is the struct to control some of the functionality
+// Trader is the helper struct to control some of the functionality and in
+// memory information about the trader bot
 type Trader struct {
 	buyAmount     float64 // amount of BTC to buy at a time, set to 0.001 for now (~$6.60 as of 7/6/18)
 	dailyHigh     float64 // hight point of the past 24hrs
@@ -57,12 +62,12 @@ type Trader struct {
 	Buyer  *Buyer
 	Seller *Seller
 
+	// utilities
 	log *logrus.Logger
-
-	mu sync.Mutex
+	mu  sync.Mutex
 }
 
-// Buyer is a struct to help control the buying algorithm
+// Buyer is a helper struct to help control the buying algorithm
 type Buyer struct {
 	// starting price, price at point of buy or start of program
 	bnbBasePrice float64
@@ -76,7 +81,7 @@ type Buyer struct {
 	mu sync.Mutex
 }
 
-// Seller is a struct to help control the selling algorithm
+// Seller is a helper struct to help control the selling algorithm
 type Seller struct {
 	// starting price, price at point of sale or start of program
 	bnbBasePrice float64
@@ -100,28 +105,21 @@ type order struct {
 	index    int
 }
 
-// Required functions for use of heap for buyOrderHeap
-func (boh buyOrderHeap) Len() int { return len(boh) }
-
-// Less returns the lesser of two elements
+// Heap implementation
+//
+func (boh buyOrderHeap) Len() int           { return len(boh) }
 func (boh buyOrderHeap) Less(i, j int) bool { return boh[i].price < boh[j].price }
-
-// Swap swaps two elements from the heap
 func (boh buyOrderHeap) Swap(i, j int) {
 	boh[i], boh[j] = boh[j], boh[i]
 	boh[i].index = i
 	boh[j].index = j
 }
-
-// Push adds an element to the heap
 func (boh *buyOrderHeap) Push(x interface{}) {
 	n := len(*boh)
 	order := x.(*order)
 	order.index = n
 	*boh = append(*boh, order)
 }
-
-// Pop removes element from the heap
 func (boh *buyOrderHeap) Pop() interface{} {
 	old := *boh
 	n := len(old)
@@ -130,8 +128,6 @@ func (boh *buyOrderHeap) Pop() interface{} {
 	*boh = old[0 : n-1]
 	return chunkData
 }
-
-// update updates the heap and reorders
 func (boh *buyOrderHeap) update(o *order, symbol string, price, quantity float64) {
 	o.symbol = symbol
 	o.price = price
@@ -148,7 +144,7 @@ func (t *Trader) check(e error) {
 	}
 }
 
-// NewTrader returns a pointer to a new Trader
+// NewTrader returns initializes a new Trader
 func NewTrader() *Trader {
 	t := &Trader{}
 	t.Buyer = &Buyer{}

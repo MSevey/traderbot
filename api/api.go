@@ -1,5 +1,10 @@
 package api
 
+// the api package handles the code the interacts with the external exchange's
+// api. The api package file should contain all the generate API handling code.
+// Code for each API should then be contained in its own file, ie code for
+// dealing with the Binance Exchange is contained in binance.go
+
 import (
 	"io/ioutil"
 	"net/http"
@@ -10,6 +15,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// api logger
 var apiLog = logrus.New()
 
 // Client is a helper struct for API calls
@@ -22,6 +28,8 @@ type Client struct {
 }
 
 // check pulls out the duplicate error checking code
+//
+// TODO: this should be removed and errors should be handling at the source
 func check(e error) {
 	if e != nil {
 		apiLog.Debug(e)
@@ -29,6 +37,8 @@ func check(e error) {
 }
 
 // InitLogger initializes the logger for the api
+//
+// NOTE: currently logging right to the terminal
 func InitLogger() {
 	apiLog.SetLevel(logrus.DebugLevel)
 	// // You could set this to any `io.Writer` such as a file

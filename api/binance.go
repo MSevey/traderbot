@@ -1,8 +1,8 @@
 package api
 
-// All api calls have a weight of 1 unless otherwise specified
+// this file contains the code for interacting with the Binance exchange API.
 //
-// Binance fees 0.75% per trade if paid with BNB
+// NOTE: All api calls have a weight of 1 unless otherwise specified
 
 import (
 	"crypto/hmac"
@@ -79,7 +79,8 @@ var (
 	BNBTime = "v1/time"
 )
 
-// ExchangeInfo is the stuct for the Binance exchange api endpoint
+// ExchangeInfo is the information returned about the exchange from the Binance
+// exchange api endpoint
 type ExchangeInfo struct {
 	Timezone string `json:"timezone"`
 	ServerTime
@@ -98,13 +99,14 @@ type Limits struct {
 	Limit         int    `json:"limit"`
 }
 
-// TickerPrice ...
+// TickerPrice is the symbol and price of a coin on the Binance exchange
 type TickerPrice struct {
 	Symbol string `json:"symbol"`
 	Price  string `json:"price"`
 }
 
-// Stats24hr ...
+// Stats24hr are the stats from the last 24 hours of a coin on the binance
+// exchange
 type Stats24hr struct {
 	Symbol             string `json:"symbol"`
 	PriceChange        string `json:"priceChange"`
@@ -114,12 +116,12 @@ type Stats24hr struct {
 	LastPrice          string `json:"lastPrice"`
 }
 
-// Orders ..
+// Orders is a list of orders from the Binance exchange
 type Orders struct {
 	Orders []Order
 }
 
-// Order ..
+// Order contains the information about an order on the binance exchange
 type Order struct {
 	Symbol              string `json:"symbol"`
 	OrderID             int    `json:"orderId"`
@@ -139,7 +141,7 @@ type Order struct {
 	IsWorking           bool   `json:"isWorking"`
 }
 
-// AccountInfo ...
+// AccountInfo is the information about a Binance exchange account
 type AccountInfo struct {
 	MakerCommission  int     `json:"makerCommission"`
 	TakerCommission  int     `json:"takerCommission"`
@@ -152,19 +154,19 @@ type AccountInfo struct {
 	Balances         []Asset `json:"balances"`
 }
 
-// Asset ...
+// Asset is the information about a coin currently held on the Binance exchange
 type Asset struct {
 	Asset  string `json:"asset"`
 	Free   string `json:"free"`
 	Locked string `json:"locked"`
 }
 
-// ServerTime ...
+// ServerTime is the current time of the Binance exchange server
 type ServerTime struct {
 	ServerTime int64 `json:"serverTime"`
 }
 
-// OrderRespHeader ...
+// OrderRespHeader is information about an order submission
 type OrderRespHeader struct {
 	Symbol          string `json:"symbol"`
 	OrderID         int    `json:"orderId"`
@@ -172,14 +174,16 @@ type OrderRespHeader struct {
 	TransactionTime int64  `json:"transactTime"`
 }
 
-// ACK ...
-type ACK struct {
-	Response OrderRespHeader
+// Ack is a type of response from an order submission. It is the information
+// that acknowledges that an order was submitted
+type Ack struct {
+	OrderRespHeader
 }
 
-// RESULT ...
-type RESULT struct {
-	Response            OrderRespHeader
+// Result is a type of response from an order submission. It is the information
+// about the result of the order submission
+type Result struct {
+	OrderRespHeader
 	Price               string `json:"price"`
 	OrigQty             string `json:"origQty"`
 	ExecutedQty         string `json:"executedQty"`
@@ -190,13 +194,14 @@ type RESULT struct {
 	Side                string `json:"side"`
 }
 
-// FULL ...
-type FULL struct {
-	Response RESULT
-	Fills    []Fill `json:"fills"`
+// Full is a type of response from an order submission. It is the all the
+// available information about an order submission
+type Full struct {
+	Result
+	Fills []Fill `json:"fills"`
 }
 
-// Fill ...
+// Fill is the information about how the order was filled
 type Fill struct {
 	Price           string `json:"price"`
 	Qty             string `json:"qty"`
@@ -209,6 +214,7 @@ func NewBinanceClient() *Client {
 	return NewClient(BinanceAPI, 2)
 }
 
+// signature creates the signature for signig api calls
 func signature(params string) string {
 	// Create a new HMAC by defining the hash type and the key (as byte array)
 	h := hmac.New(sha256.New, []byte(BNBAPISecretKey))
@@ -347,7 +353,7 @@ func (c *Client) GetOpenOrders() []Order {
 // LIMIT_MAKER			quantity, price
 
 // PostNewLimitOrder calls the API endpoint to submit a limit order to Binance
-func (c *Client) PostNewLimitOrder(symbol, side string, quantity float64) RESULT {
+func (c *Client) PostNewLimitOrder(symbol, side string, quantity float64) Result {
 
 	timestamp := strconv.FormatInt(time.Now().UnixNano()/int64(time.Millisecond), 10)
 	values := url.Values{}
@@ -366,7 +372,7 @@ func (c *Client) PostNewLimitOrder(symbol, side string, quantity float64) RESULT
 	body, err := c.PostSecureAPI(c.Address + BNBTestOrder + query)
 	check(err)
 
-	result := RESULT{}
+	result := Result{}
 	jsonErr := json.Unmarshal(body, &result)
 	check(jsonErr)
 

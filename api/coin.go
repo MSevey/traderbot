@@ -1,5 +1,7 @@
 package api
 
+// this file contains the code for interacting with the CoinMarketCap API
+
 import (
 	"encoding/json"
 	"strconv"

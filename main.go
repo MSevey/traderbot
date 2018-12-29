@@ -1,5 +1,8 @@
 package main
 
+// the main package initializes threads and loops to start and control the
+// trader
+
 import (
 	"fmt"
 	"os"
@@ -8,15 +11,9 @@ import (
 	"time"
 
 	"github.com/MSevey/traderBot/api"
-	"github.com/MSevey/traderBot/metrics"
 	"github.com/MSevey/traderBot/trader"
 	"github.com/sirupsen/logrus"
 )
-
-// This will be a trader for Binance.
-//
-// Since Binance offers lower fees when you pay with BNB, store trading balance
-// in BNB and buy and sell BTC
 
 const (
 	// the following the time intervals that the loops should run
@@ -52,28 +49,10 @@ func main() {
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt)
 
-	// // Metrics goroutine
-	// fmt.Println("go metrics")
-	// go metrics.Test()
-	p, err := metrics.PortfolioBalance()
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(p)
+	// start trading
+	go trade(done)
 
-	// // coinMarketCap API goroutine
-	// fmt.Println("go coin")
-	// go coinMarketCap(done)
-
-	// binance API goroutine
-	// go binance(done)
-
-	// // Sending Email
-	// //
-	// // Build Mail object
-	// mail.SendEmail()
-
-	// Listen for crtl c to end
+	// Listen for crtl+c to end
 	for {
 		select {
 		case <-sig:
@@ -93,8 +72,8 @@ func check(e error) {
 	}
 }
 
-// binance is the current go routine that controlls all the binance calls
-func binance(done chan struct{}) {
+// trade trades on the binance exchange
+func trade(done chan struct{}) {
 	// Initialize trader
 	t := trader.NewTrader()
 
@@ -173,29 +152,5 @@ func binance(done chan struct{}) {
 		default:
 		}
 		time.Sleep(binanceLoopTime)
-	}
-}
-
-//
-func coinMarketCap(done chan struct{}) {
-	fmt.Println("coin")
-	// Create client for coinmarketcap requests
-	coinClient := api.NewCoinCapClient()
-
-	BTC := coinClient.GetTickerInfo(api.BTCID)
-	fmt.Println(BTC)
-
-	BNB := coinClient.GetTickerInfo(api.BNBID)
-	fmt.Println(BNB)
-
-	// Loop to test go routine
-	for {
-		select {
-		case <-done:
-			return
-		default:
-		}
-		fmt.Println("coinMarketCap loop")
-		time.Sleep(time.Second)
 	}
 }

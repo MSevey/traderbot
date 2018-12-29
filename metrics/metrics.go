@@ -1,8 +1,8 @@
 package metrics
 
-// The metrics package is where all the personal metric calculations will take
-// place.  These are the metrics that will be emailed to me daily so I can check
-// on the health of the trader
+// The metrics package is where all the metric calculations will take place.
+// These are the metrics that will be emailed out so that the health of the
+// trader bot can be monitored and improved.
 
 import (
 	"fmt"
@@ -15,35 +15,41 @@ import (
 
 // Metrics to Get and Track
 //
+// should focus on amount of coin as well as $$ value since amount of coin is a
+// better indicator of how well the trader bot is doing since the $$ value of
+// crypto is so volatile
+//
 // 1) Current Value
 //
 // 2) Last week's value
-// 		- % change in balance
+//      - % change in balance
 //
 // 3) Last 24hr value
-// 		- % change in balance
+//      - % change in balance
 //
 // 4) Number of buys
-// 		- Highest buy price
-// 		- Lowest buy price
+//      - Highest buy price
+//      - Lowest buy price
 //
 //  5) Number of sells
-// 		- Highest sell price
-// 		- Lowest sell price
+//      - Highest sell price
+//      - Lowest sell price
 //
 // TODO
 //
 // 1) persist data, start with writing json to disk
 
 type (
-	// Portfolio ...
+	// Portfolio is the portfolio information pulled from the exchange
+	// (currently binance)
 	Portfolio struct {
 		Assets  []Asset
 		Updated time.Time
 		Value   float64
 	}
 
-	// Asset ...
+	// Asset is the information about a coin held on an exchange (currently
+	// binance)
 	Asset struct {
 		Symbol   string
 		Quantity float64

@@ -76,7 +76,7 @@ func SendEmail(mail Mail) error {
 		return err
 	}
 
-	// add all from and to addresses
+	// add all from and to addresses and initiate mail
 	if err = client.Mail(mail.senderID); err != nil {
 		return err
 	}

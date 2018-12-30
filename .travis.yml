@@ -10,7 +10,11 @@ install:
   - make dependencies
   - make fmt
   - make lint
-  - make test
+  - glyphcheck ./...
+  - make dev
+  - make vet
+
+# script: make test
 
 branches:
   only:

@@ -10,8 +10,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/MSevey/traderBot/api"
-	"github.com/MSevey/traderBot/trader"
+	"github.com/MSevey/traderbot/api"
+	"github.com/MSevey/traderbot/trader"
 	"github.com/sirupsen/logrus"
 )
 

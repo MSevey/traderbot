@@ -27,15 +27,6 @@ type Client struct {
 	Timeout time.Duration
 }
 
-// check pulls out the duplicate error checking code
-//
-// TODO: this should be removed and errors should be handling at the source
-func check(e error) {
-	if e != nil {
-		apiLog.Debug(e)
-	}
-}
-
 // InitLogger initializes the logger for the api
 //
 // NOTE: currently logging right to the terminal
@@ -98,7 +89,10 @@ func (c *Client) GetSecureAPI(url string) ([]byte, error) {
 	}
 
 	req, err := http.NewRequest("GET", url, nil)
-	check(err)
+	if err != nil {
+		apiLog.Warn("WARN: error creating new request:", err)
+		return []byte{}, err
+	}
 	req.Header.Add("X-MBX-APIKEY", BNBAPIPubKey)
 	res, err := apiClient.Do(req)
 	if err != nil {
@@ -116,7 +110,10 @@ func (c *Client) PostSecureAPI(url string) ([]byte, error) {
 	}
 
 	req, err := http.NewRequest("POST", url, nil)
-	check(err)
+	if err != nil {
+		apiLog.Warn("WARN: error creating new request:", err)
+		return []byte{}, err
+	}
 	req.Header.Add("X-MBX-APIKEY", BNBAPIPubKey)
 	res, err := apiClient.Do(req)
 	if err != nil {

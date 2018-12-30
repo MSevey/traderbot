@@ -63,15 +63,6 @@ func main() {
 	}
 }
 
-// check pulls out the duplicate error checking code
-//
-// TODO: Replace with log to file
-func check(e error) {
-	if e != nil {
-		log.Debug(e)
-	}
-}
-
 // trade trades on the binance exchange
 func trade(done chan struct{}) {
 	// Initialize trader
@@ -100,7 +91,11 @@ func trade(done chan struct{}) {
 
 	for {
 		// Ping exchange to get up to date limits
-		info := binanceClient.GetBinanceExchangeInfo()
+		info, err := binanceClient.GetBinanceExchangeInfo()
+		if err != nil {
+			log.Warn("WARN: error getting exchange info:", err)
+			continue
+		}
 		t.UpdateLimits(info)
 
 		btcPrice, btcSymbol, err := t.UpdateBTCBuyerPrices(binanceClient)

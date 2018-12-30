@@ -13,7 +13,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/MSevey/traderBot/api"
+	"github.com/MSevey/traderbot/api"
 	"github.com/sirupsen/logrus"
 )
 

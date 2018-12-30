@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/MSevey/traderBot/api"
+	"github.com/MSevey/traderbot/api"
 )
 
 // Metrics to Get and Track

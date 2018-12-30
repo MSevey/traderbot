@@ -135,15 +135,6 @@ func (boh *buyOrderHeap) update(o *order, symbol string, price, quantity float64
 	heap.Fix(boh, o.index)
 }
 
-// check pulls out the duplicate error checking code
-//
-// TODO: Replace with log to file (Logrus)
-func (t *Trader) check(e error) {
-	if e != nil {
-		t.log.Debug(e)
-	}
-}
-
 // NewTrader returns initializes a new Trader
 func NewTrader() *Trader {
 	t := &Trader{}
@@ -351,24 +342,30 @@ func (t *Trader) TryBTCSell(c *api.Client, btcprice float64) {
 }
 
 // UpdateBalances updates the asset and min balance of the Trader
-func (t *Trader) UpdateBalances(account api.AccountInfo) {
+func (t *Trader) UpdateBalances(account api.AccountInfo) error {
 	t.mu.Lock()
 	defer t.mu.Unlock()
 
 	for _, asset := range account.Balances {
 		if asset.Asset == "BTC" {
 			bal, err := strconv.ParseFloat(asset.Free, 64)
-			t.check(err)
+			if err != nil {
+				return err
+			}
 			t.btcBalance = bal
 		}
 		if asset.Asset == "BNB" {
 			bal, err := strconv.ParseFloat(asset.Free, 64)
-			t.check(err)
+			if err != nil {
+				return err
+			}
 			t.bnbBalance = bal
 		}
 		if asset.Asset == "USDT" {
 			bal, err := strconv.ParseFloat(asset.Free, 64)
-			t.check(err)
+			if err != nil {
+				return err
+			}
 			t.usdtBalance = bal
 			if t.usdtBalance > buyBalanceLimit {
 				t.canBuyBTC = true
@@ -382,7 +379,9 @@ func (t *Trader) UpdateBalances(account api.AccountInfo) {
 	minBalStr := os.Getenv("binanceMinBalance")
 	if minBalStr != "" {
 		minBal, err = strconv.ParseFloat(minBalStr, 64)
-		t.check(err)
+		if err != nil {
+			return err
+		}
 	}
 	if t.minBalance < minBal {
 		t.minBalance = minBal
@@ -390,6 +389,8 @@ func (t *Trader) UpdateBalances(account api.AccountInfo) {
 	if t.minBalance < 0.75*t.btcBalance {
 		t.minBalance = 0.75 * t.btcBalance
 	}
+
+	return nil
 }
 
 // UpdateLimits updates the api limits of the Trader

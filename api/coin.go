@@ -69,13 +69,19 @@ func NewCoinCapClient() *Client {
 
 // GetTickerInfo calls the api endpoints that returns the ticker information for
 // a coin
-func (c *Client) GetTickerInfo(ticker int) CoinCap {
+func (c *Client) GetTickerInfo(ticker int) (CoinCap, error) {
 	body, err := c.GetAPI(c.Address + strconv.Itoa(ticker) + "/")
-	check(err)
+	if err != nil {
+		apiLog.Warn("WARN: error submitting get request:", err)
+		return CoinCap{}, err
+	}
 
 	coin := CoinCap{}
-	jsonErr := json.Unmarshal(body, &coin)
-	check(jsonErr)
+	err = json.Unmarshal(body, &coin)
+	if err != nil {
+		apiLog.Warn("WARN: error unmarshaling coin cap info:", err)
+		return CoinCap{}, err
+	}
 
-	return coin
+	return coin, nil
 }

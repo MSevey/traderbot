@@ -228,15 +228,21 @@ func signature(params string) string {
 
 // Get24hrStats calls the API endpoint that returns the 24hr statistics on a
 // coin
-func (c *Client) Get24hrStats(symbol string) Stats24hr {
+func (c *Client) Get24hrStats(symbol string) (Stats24hr, error) {
 	body, err := c.GetAPI(c.Address + BNB24hrStats + "?symbol=" + symbol)
-	check(err)
+	if err != nil {
+		apiLog.Warn("WARN: error submitting get request:", err)
+		return Stats24hr{}, err
+	}
 
 	stats := Stats24hr{}
-	jsonErr := json.Unmarshal(body, &stats)
-	check(jsonErr)
+	err = json.Unmarshal(body, &stats)
+	if err != nil {
+		apiLog.Warn("WARN: error unmarshaling stats:", err)
+		return Stats24hr{}, err
+	}
 
-	return stats
+	return stats, nil
 }
 
 // GetAccountInfo calls the API endpoint that returns account info
@@ -249,14 +255,16 @@ func (c *Client) GetAccountInfo() (AccountInfo, error) {
 	query := fmt.Sprintf("?%v&signature=%v", params, sig)
 	body, err := c.GetSecureAPI(c.Address + BNBAccount + query)
 	if err != nil {
+		apiLog.Warn("WARN: error submitting get request:", err)
 		return AccountInfo{}, err
 	}
 
 	// Get Account Info
 	account := AccountInfo{}
-	jsonErr := json.Unmarshal(body, &account)
-	if jsonErr != nil {
-		return AccountInfo{}, jsonErr
+	err = json.Unmarshal(body, &account)
+	if err != nil {
+		apiLog.Warn("WARN: error unmarshaling account info:", err)
+		return AccountInfo{}, err
 	}
 	return account, nil
 }
@@ -264,45 +272,59 @@ func (c *Client) GetAccountInfo() (AccountInfo, error) {
 // GetAllOrders calls the endpoint that returns all order history fpr a given symbol
 //
 // Weight 5
-func (c *Client) GetAllOrders(symbol string) []Order {
+func (c *Client) GetAllOrders(symbol string) ([]Order, error) {
 	timestamp := strconv.FormatInt(time.Now().UnixNano()/int64(time.Millisecond), 10)
 	params := fmt.Sprintf("symbol=%v&timestamp=%v&recvWindow=%v", symbol, timestamp, recvWindow)
 	sig := signature(params)
 	query := fmt.Sprintf("?%v&signature=%v", params, sig)
 	body, err := c.GetSecureAPI(c.Address + BNBAllOrders + query)
-	check(err)
+	if err != nil {
+		apiLog.Warn("WARN: error submitting get request:", err)
+		return []Order{}, err
+	}
 
 	// Get Open Orders
 	orders := []Order{}
-	jsonErr := json.Unmarshal(body, &orders)
-	check(jsonErr)
+	err = json.Unmarshal(body, &orders)
+	if err != nil {
+		apiLog.Warn("WARN: error unmarshaling orders:", err)
+		return []Order{}, err
+	}
 
-	return orders
+	return orders, nil
 }
 
 // GetBinanceExchangeInfo calls the API endpoint that returns info on the binance
 // exchange
-func (c *Client) GetBinanceExchangeInfo() ExchangeInfo {
+func (c *Client) GetBinanceExchangeInfo() (ExchangeInfo, error) {
 	body, err := c.GetAPI(c.Address + BNBExchangeInfo)
-	check(err)
+	if err != nil {
+		apiLog.Warn("WARN: error submitting get request:", err)
+		return ExchangeInfo{}, err
+	}
 
 	// Get ExchangeInfo
 	info := ExchangeInfo{}
-	jsonErr := json.Unmarshal(body, &info)
-	check(jsonErr)
-	return info
+	err = json.Unmarshal(body, &info)
+	if err != nil {
+		apiLog.Warn("WARN: error unmarshaling exchange info:", err)
+		return ExchangeInfo{}, err
+	}
+	return info, nil
 }
 
 // GetCoinPrice calls the API endpoint that returns the current price for a coin
 func (c *Client) GetCoinPrice(symbol string) (TickerPrice, error) {
 	body, err := c.GetAPI(c.Address + BNBPrice + "?symbol=" + symbol)
 	if err != nil {
+		apiLog.Warn("WARN: error submitting get request:", err)
 		return TickerPrice{}, err
 	}
 
 	price := TickerPrice{}
 	err = json.Unmarshal(body, &price)
 	if err != nil {
+		apiLog.Warn("WARN: error unmarshaling ticker price:", err)
 		return TickerPrice{}, err
 	}
 
@@ -312,20 +334,26 @@ func (c *Client) GetCoinPrice(symbol string) (TickerPrice, error) {
 // GetOpenOrders calls the endpoint that returns all open orders
 //
 // Weight 1 with symbol, 40 w/o symbol
-func (c *Client) GetOpenOrders() []Order {
+func (c *Client) GetOpenOrders() ([]Order, error) {
 	timestamp := strconv.FormatInt(time.Now().UnixNano()/int64(time.Millisecond), 10)
 	params := fmt.Sprintf("timestamp=%v&recvWindow=%v", timestamp, recvWindow)
 	sig := signature(params)
 	query := fmt.Sprintf("?%v&signature=%v", params, sig)
 	body, err := c.GetSecureAPI(c.Address + BNBOpenOrders + query)
-	check(err)
+	if err != nil {
+		apiLog.Warn("WARN: error submitting get request:", err)
+		return []Order{}, err
+	}
 
 	// Get Open Orders
 	orders := []Order{}
-	jsonErr := json.Unmarshal(body, &orders)
-	check(jsonErr)
+	err = json.Unmarshal(body, &orders)
+	if err != nil {
+		apiLog.Warn("WARN: error unmarshaling ticker price:", err)
+		return []Order{}, err
+	}
 
-	return orders
+	return orders, nil
 }
 
 // Order Parameters
@@ -353,7 +381,7 @@ func (c *Client) GetOpenOrders() []Order {
 // LIMIT_MAKER			quantity, price
 
 // PostNewLimitOrder calls the API endpoint to submit a limit order to Binance
-func (c *Client) PostNewLimitOrder(symbol, side string, quantity float64) Result {
+func (c *Client) PostNewLimitOrder(symbol, side string, quantity float64) (Result, error) {
 
 	timestamp := strconv.FormatInt(time.Now().UnixNano()/int64(time.Millisecond), 10)
 	values := url.Values{}
@@ -370,11 +398,17 @@ func (c *Client) PostNewLimitOrder(symbol, side string, quantity float64) Result
 	query := fmt.Sprintf("?%v&signature=%v", params, sig)
 
 	body, err := c.PostSecureAPI(c.Address + BNBTestOrder + query)
-	check(err)
+	if err != nil {
+		apiLog.Warn("WARN: error submitting post request:", err)
+		return Result{}, err
+	}
 
 	result := Result{}
-	jsonErr := json.Unmarshal(body, &result)
-	check(jsonErr)
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		apiLog.Warn("WARN: error unmarshaling ticker price:", err)
+		return Result{}, err
+	}
 
-	return result
+	return result, nil
 }

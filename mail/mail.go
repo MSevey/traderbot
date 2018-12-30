@@ -41,7 +41,7 @@ type SMTPServer struct {
 // NOTE: currently hardcoded for Gmail
 //
 // TODO: remove panics
-func SendEmail() {
+func SendEmail() error {
 	// Mail parameters
 	//
 	// TODO: these should be input parameters
@@ -68,42 +68,42 @@ func SendEmail() {
 	}
 	conn, err := tls.Dial("tcp", smtpServer.ServerName(), tlsconfig)
 	if err != nil {
-		log.Panic(err)
+		return err
 	}
 
 	// Build client
 	client, err := smtp.NewClient(conn, smtpServer.host)
 	if err != nil {
-		log.Panic(err)
+		return err
 	}
 
 	// Use Authorization
 	if err = client.Auth(auth); err != nil {
-		log.Panic(err)
+		return err
 	}
 
 	// add all from and to addresses
 	if err = client.Mail(mail.senderID); err != nil {
-		log.Panic(err)
+		return err
 	}
 	for _, k := range mail.toIds {
 		if err = client.Rcpt(k); err != nil {
-			log.Panic(err)
+			return err
 		}
 	}
 
 	// Write Data to body
 	w, err := client.Data()
 	if err != nil {
-		log.Panic(err)
+		return err
 	}
 	_, err = w.Write([]byte(messageBody))
 	if err != nil {
-		log.Panic(err)
+		return err
 	}
 	err = w.Close()
 	if err != nil {
-		log.Panic(err)
+		return err
 	}
 
 	// Close the Client
@@ -112,6 +112,7 @@ func SendEmail() {
 	client.Quit()
 
 	log.Println("Mail sent successfully")
+	return nil
 }
 
 // ServerName returns the constructed name of the server

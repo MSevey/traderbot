@@ -12,7 +12,6 @@ package mail
 import (
 	"crypto/tls"
 	"fmt"
-	"log"
 	"net/smtp"
 	"os"
 	"strings"
@@ -20,6 +19,12 @@ import (
 
 var (
 	gmailPassword = os.Getenv("gmailPassword")
+
+	// SenderEmail is the Hard Coded sender Email
+	SenderEmail = "mjsevey@gmail.com"
+
+	// ToEmail is the Hard Coded To email address
+	ToEmail = "mjsevey@gmail.com"
 )
 
 // Mail contains the information about the email being sent
@@ -39,18 +44,7 @@ type SMTPServer struct {
 // SendEmail sends an email, based on the provided Mail parameters
 //
 // NOTE: currently hardcoded for Gmail
-//
-// TODO: remove panics
-func SendEmail() error {
-	// Mail parameters
-	//
-	// TODO: these should be input parameters
-	mail := Mail{}
-	mail.senderID = "mjsevey@gmail.com"
-	mail.toIds = []string{"mjsevey@gmail.com"}
-	mail.subject = "This is the email subject"
-	mail.body = "Harry Potter and threat to Hogwarts\n\nGood editing!!"
-
+func SendEmail(mail Mail) error {
 	// Build message
 	messageBody := mail.BuildMessage()
 
@@ -107,11 +101,11 @@ func SendEmail() error {
 	}
 
 	// Close the Client
-	//
-	// TODO: check error
-	client.Quit()
+	err = client.Quit()
+	if err != nil {
+		return err
+	}
 
-	log.Println("Mail sent successfully")
 	return nil
 }
 
@@ -122,7 +116,7 @@ func (s *SMTPServer) ServerName() string {
 
 // BuildMessage builds the email message
 func (m *Mail) BuildMessage() string {
-	message := ""
+	var message string
 	message += fmt.Sprintf("From: %s\r\n", m.senderID)
 	if len(m.toIds) > 0 {
 		message += fmt.Sprintf("To: %s\r\n", strings.Join(m.toIds, ";"))

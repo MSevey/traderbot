@@ -10,6 +10,7 @@ install:
   - make dependencies
   - make fmt
   - make lint
+  - make test
 
 branches:
   only:

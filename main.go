@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/MSevey/traderbot/api"
+	"github.com/MSevey/traderbot/mail"
 	"github.com/MSevey/traderbot/trader"
 	"github.com/sirupsen/logrus"
 )
@@ -52,6 +53,9 @@ func main() {
 	// start trading
 	go trade(done)
 
+	// Send Email Summaries
+	go emailSummaries(done)
+
 	// Listen for crtl+c to end
 	for {
 		select {
@@ -59,6 +63,27 @@ func main() {
 			close(done)
 			return
 		default:
+		}
+	}
+}
+
+func emailSummaries(done chan struct{}) {
+	// Send emails on start up
+	if err := mail.EmailLifeTimePerformance(); err != nil {
+		log.Warn("couldn't send life time summary email", err)
+	}
+
+	// Send emails on intervals
+	for {
+		// Send Summary once a minute
+		lifeTimeSignal := time.After(24 * time.Hour)
+		select {
+		case <-done:
+			return
+		case <-lifeTimeSignal:
+			if err := mail.EmailLifeTimePerformance(); err != nil {
+				log.Warn("couldn't send life time summary email", err)
+			}
 		}
 	}
 }
@@ -74,7 +99,7 @@ func trade(done chan struct{}) {
 	// Get account information
 	account, err := binanceClient.GetAccountInfo()
 	if err != nil {
-		log.Warn("Couldn't get account info")
+		log.Warn("Couldn't get account info", err)
 		return
 	}
 	if !account.CanTrade {

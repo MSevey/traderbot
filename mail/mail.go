@@ -15,6 +15,8 @@ import (
 	"net/smtp"
 	"os"
 	"strings"
+
+	"github.com/MSevey/traderbot/metrics"
 )
 
 var (
@@ -39,6 +41,45 @@ type Mail struct {
 type SMTPServer struct {
 	host string
 	port string
+}
+
+// performanceToBody creates a body for an email from the portfolio performance
+// struct
+func performanceToBody(performance metrics.PortfolioPerformance) string {
+	var body string
+	for _, a := range performance.Assets {
+		s := fmt.Sprintf(`
+		Asset: %v
+		Absolute Qty Increase: %v
+		Percent Qty Increase: %v
+		Absolute Value Increase: %v
+		Percent Value Increase: %v
+		
+		`, a.Symbol, a.QtyIncreaseAbs, a.QtyIncreasePercent, a.ValueIncreaseAbs, a.ValueIncreasePercent)
+		body += s
+	}
+	return body
+}
+
+// EmailLifeTimePerformance sends an email with the lifetime performance of the
+// portfolio
+func EmailLifeTimePerformance() error {
+	// Get performance information
+	performance, err := metrics.LifeTimePortfolioPerformance()
+	if err != nil {
+		return err
+	}
+
+	// Build Mail
+	mail := Mail{
+		senderID: SenderEmail,
+		toIds:    []string{ToEmail},
+		subject:  "Lifetime Performance",
+		body:     performanceToBody(performance),
+	}
+
+	// Send mail
+	return SendEmail(mail)
 }
 
 // SendEmail sends an email, based on the provided Mail parameters

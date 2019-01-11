@@ -6,6 +6,7 @@ dependencies:
 	go get -u github.com/golang/lint/golint
 	go get -u github.com/sirupsen/logrus 
 	go get -u github.com/NebulousLabs/glyphcheck
+	go get -u gitlab.com/NebulousLabs/Sia/persist 
 
 dev:
 	go install $(pkgs)

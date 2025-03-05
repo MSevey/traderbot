@@ -43,6 +43,19 @@ func main() {
 	initLogger()
 	api.InitLogger()
 
+	// Initialize the database
+	var err error
+	db, err = persistence.OpenDatabase(persistence.DefaultDatabasePath())
+	if err != nil {
+		log.Fatal("Failed to open database:", err)
+	}
+	defer db.Close()
+
+	// Initialize metrics with the database
+	if err := metrics.SetDB(db); err != nil {
+		log.Fatal("Failed to initialize metrics:", err)
+	}
+
 	// Create channel to control go routines
 	//
 	// TODO: look at importing Nebulous Labs thread repo
@@ -109,6 +122,11 @@ func trade(done chan struct{}) {
 	// Update balances
 	t.UpdateBalances(account)
 
+	// Load minBalance from database
+	if err := t.LoadMinBalance(db); err != nil {
+		log.Warn("Failed to load minBalance from database:", err)
+	}
+
 	fmt.Println("btcBalance", t.BtcBalance())
 	fmt.Println("bnbBalance", t.BnbBalance())
 	fmt.Println("usdtBalance", t.UsdtBalance())
@@ -163,9 +181,9 @@ func trade(done chan struct{}) {
 
 		select {
 		case <-done:
-			// persist minBalance
-			if err := os.Setenv("binanceMinBalance", strconv.FormatFloat(t.MinBalance(), 'f', -1, 64)); err != nil {
-				log.Warn(err)
+			// persist minBalance to database
+			if err := db.SaveMinBalance(t.MinBalance()); err != nil {
+				log.Warn("Failed to save minBalance to database:", err)
 			}
 			// submit all order heap as sell orders
 			return

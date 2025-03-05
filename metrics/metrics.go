@@ -7,13 +7,12 @@ package metrics
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 	"reflect"
 	"strconv"
 	"time"
 
 	"github.com/MSevey/traderbot/api"
-	"gitlab.com/NebulousLabs/Sia/persist"
+	"github.com/MSevey/traderbot/persistence"
 )
 
 // Metrics to Get and Track
@@ -71,28 +70,35 @@ type (
 	}
 )
 
-var (
-	// metricsDir is the default directory where the trader metric data will be
-	// persisted
-	//
-	// NOTE: this assumes a linux system
-	metricsDir = filepath.Join(os.Getenv("HOME"), "tradermetrics")
+// Database instance
+var db *persistence.DB
 
-	// initialBalanceMetadata is the metadata for the persisted file that stores
-	// the initial starting balance for the trader
-	initialBalanceMetadata = persist.Metadata{
-		Header:  "InitialBalance",
-		Version: "v1.0.0",
+// SetDB sets the database instance for the metrics package
+func SetDB(database *persistence.DB) error {
+	if database == nil {
+		return fmt.Errorf("database is nil")
 	}
+	db = database
+	return nil
+}
 
-	// initialBalanceFile is the filename for the persisted file containing the
-	// initial balance of the trader
-	initialBalanceFile = "initialbalance"
+// InitDB initializes the database connection
+func InitDB() error {
+	var err error
+	db, err = persistence.OpenDatabase(persistence.DefaultDatabasePath())
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
-	// balanceExtension is the common file extension for the persisted balance
-	// files
-	balanceExtension = ".bal"
-)
+// CloseDB closes the database connection
+func CloseDB() error {
+	if db != nil {
+		return db.Close()
+	}
+	return nil
+}
 
 // LifeTimePortfolioPerformance calculates the lifetime performance of the
 // portfolio
@@ -152,21 +158,69 @@ func LifeTimePortfolioPerformance() (PortfolioPerformance, error) {
 // initialBalance returns the initial balance of the trader that was saved on
 // disk. If there is not an initial balance found on disk one will be generated
 func initialBalance() (Portfolio, error) {
-	filename := filepath.Join(metricsDir, initialBalanceFile+balanceExtension)
-	portfolio := Portfolio{}
-	err := persist.LoadJSON(initialBalanceMetadata, portfolio, filename)
-	if os.IsNotExist(err) {
-		// No initial balance found, create an initial balance
-		if err = os.MkdirAll(metricsDir, 0777); err != nil {
+	// Initialize DB if not already initialized
+	if db == nil {
+		if err := InitDB(); err != nil {
 			return Portfolio{}, err
 		}
-		portfolio, err = PortfolioBalance()
-		err = persist.SaveJSON(initialBalanceMetadata, portfolio, filename)
+		defer CloseDB()
 	}
-	if err != nil {
+
+	// Try to load initial balance from database
+	dbPortfolio, err := db.LoadInitialBalance()
+	if err == persistence.ErrKeyNotFound {
+		// No initial balance found, create an initial balance
+		portfolio, err := PortfolioBalance()
+		if err != nil {
+			return Portfolio{}, err
+		}
+		
+		// Save to database
+		if err = db.SaveInitialBalance(persistence.Portfolio{
+			Assets:  convertToDBAssets(portfolio.Assets),
+			Updated: portfolio.Updated,
+			Value:   portfolio.Value,
+		}); err != nil {
+			return Portfolio{}, err
+		}
+		
+		return portfolio, nil
+	} else if err != nil {
 		return Portfolio{}, err
 	}
-	return portfolio, nil
+	
+	// Convert DB portfolio to metrics portfolio
+	return Portfolio{
+		Assets:  convertFromDBAssets(dbPortfolio.Assets),
+		Updated: dbPortfolio.Updated,
+		Value:   dbPortfolio.Value,
+	}, nil
+}
+
+// convertToDBAssets converts metrics.Asset slice to persistence.Asset slice
+func convertToDBAssets(assets []Asset) []persistence.Asset {
+	dbAssets := make([]persistence.Asset, len(assets))
+	for i, asset := range assets {
+		dbAssets[i] = persistence.Asset{
+			Symbol:   asset.Symbol,
+			Quantity: asset.Quantity,
+			Value:    asset.Value,
+		}
+	}
+	return dbAssets
+}
+
+// convertFromDBAssets converts persistence.Asset slice to metrics.Asset slice
+func convertFromDBAssets(dbAssets []persistence.Asset) []Asset {
+	assets := make([]Asset, len(dbAssets))
+	for i, dbAsset := range dbAssets {
+		assets[i] = Asset{
+			Symbol:   dbAsset.Symbol,
+			Quantity: dbAsset.Quantity,
+			Value:    dbAsset.Value,
+		}
+	}
+	return assets
 }
 
 // PortfolioBalance returns the binance portfolio, listing the coins held and

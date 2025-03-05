@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/MSevey/traderbot/api"
+	"github.com/MSevey/traderbot/persistence"
 	"github.com/sirupsen/logrus"
 )
 
@@ -341,6 +342,25 @@ func (t *Trader) TryBTCSell(c *api.Client, btcprice float64) {
 
 }
 
+// LoadMinBalance loads the minimum balance from the database
+func (t *Trader) LoadMinBalance(db *persistence.DB) error {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+
+	// Try to load minBalance from database
+	minBal, err := db.LoadMinBalance()
+	if err != nil && err != persistence.ErrKeyNotFound {
+		return err
+	} else if err == nil {
+		// Set minBalance from database
+		if t.minBalance < minBal {
+			t.minBalance = minBal
+		}
+	}
+
+	return nil
+}
+
 // UpdateBalances updates the asset and min balance of the Trader
 func (t *Trader) UpdateBalances(account api.AccountInfo) error {
 	t.mu.Lock()
@@ -373,19 +393,7 @@ func (t *Trader) UpdateBalances(account api.AccountInfo) error {
 		}
 	}
 
-	// Set min balance
-	var minBal float64
-	var err error
-	minBalStr := os.Getenv("binanceMinBalance")
-	if minBalStr != "" {
-		minBal, err = strconv.ParseFloat(minBalStr, 64)
-		if err != nil {
-			return err
-		}
-	}
-	if t.minBalance < minBal {
-		t.minBalance = minBal
-	}
+	// Set min balance if it's less than 75% of the current BTC balance
 	if t.minBalance < 0.75*t.btcBalance {
 		t.minBalance = 0.75 * t.btcBalance
 	}

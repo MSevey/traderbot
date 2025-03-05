@@ -1,5 +1,5 @@
 run = .
-pkgs = ./api ./mail ./metrics ./tests ./trader ./
+pkgs = ./api ./mail ./metrics ./tests ./trader ./persistence ./
 
 dependencies:
 	# General dependencies
@@ -7,6 +7,7 @@ dependencies:
 	go get -u github.com/sirupsen/logrus 
 	go get -u github.com/NebulousLabs/glyphcheck
 	go get -u gitlab.com/NebulousLabs/Sia/persist 
+	go get -u github.com/boltdb/bolt
 
 dev:
 	go install $(pkgs)
